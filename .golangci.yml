@@ -1,0 +1,115 @@
+run:
+  tests: false
+  timeout: 5m
+  skip-dirs:
+    - test/fury
+
+linters-settings:
+  lll:
+    # max line length, lines longer will be reported. Default is 120.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option
+    line-length: 140
+  gocritic:
+    enabled-checks:
+      - appendAssign
+      - argOrder
+      - assignOp
+      - badCall
+      - badCond
+      - boolExprSimplify
+      - captLocal
+      - caseOrder
+      - codegenComment
+      - commentedOutCode
+      - commentedOutImport
+      - commentFormatting
+      - defaultCaseOrder
+      - deprecatedComment
+      - dupArg
+      - dupBranchBody
+      - dupCase
+      - dupImport
+      - dupSubExpr
+      - elseif
+      - exitAfterDefer
+      - flagDeref
+      - flagName
+      - ifElseChain
+      - mapKey
+      - newDeref
+      - offBy1
+      - regexpMust
+      - singleCaseSwitch
+      - sloppyLen
+      - stringXbytes
+      - switchTrue
+      - typeSwitchVar
+      - underef
+      - unlambda
+      - unslice
+      - valSwap
+      - whyNoLint
+      - wrapperFunc
+    disabled-tags:
+      - performance
+      - style
+  golint:
+    min-confidence: 0
+  misspell:
+    locale: US
+    ignore-words:
+      - reportes
+      - responsable
+  whitespace:
+    multi-if: true
+    multi-func: true
+  gomodguard:
+    list-type: blacklist
+    blocked:
+      modules:
+        - github.com/newrelic/go-agent:
+            reason: "Use github.com/newrelic/go-agent/v3 module instead"
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - bodyclose
+    - dogsled
+    - deadcode
+    - dupl
+    - errcheck
+    - godot
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gofmt
+    # - gofumpt Conflits with `whitespace`
+    - goimports
+    - golint
+    # - gomnd
+    - goprintffuncname
+    - gosimple
+    - govet
+    - gomodguard
+    - gosec
+    - lll
+    - ineffassign
+    - misspell
+    - nakedret
+    - noctx
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+issues:
+  exclude:
+    - method GetTtl should be GetTTL
+    - method SetTtl should be SetTTL

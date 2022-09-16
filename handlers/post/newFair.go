@@ -36,8 +36,7 @@ func (handler *newFairHandler) NewFair() gin.HandlerFunc {
 		err := c.ShouldBindBodyWith(&newFair, binding.JSON)
 
 		if err != nil {
-			err = exceptions.NewBadRequest(err)
-			_ = c.Error(err)
+			_ = c.Error(exceptions.NewBadRequest(err))
 			return
 		}
 

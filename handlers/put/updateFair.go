@@ -1,6 +1,7 @@
 package put
 
 import (
+	"github.com/jeffersonto/feira-api/util/exceptions"
 	"net/http"
 	"strings"
 
@@ -41,7 +42,7 @@ func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {
 
 		err = c.ShouldBindBodyWith(&updateFair, binding.JSON)
 		if err != nil {
-			_ = c.Error(err)
+			_ = c.Error(exceptions.NewBadRequest(err))
 			return
 		}
 

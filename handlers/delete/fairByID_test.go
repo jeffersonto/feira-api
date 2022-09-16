@@ -20,14 +20,14 @@ func TestFairByID(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		input          string
+		pathParameter  string
 		expectedFairID int64
 		warmUP         func(expectedFairID int64)
 		expected       func(result *httptest.ResponseRecorder)
 	}{
 		{
 			name:           "Should successfully delete and return status code 204",
-			input:          "1",
+			pathParameter:  "1",
 			expectedFairID: 1,
 			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
@@ -40,7 +40,7 @@ func TestFairByID(t *testing.T) {
 		},
 		{
 			name:           "Should not be able to convert the path parameter and return status code 400",
-			input:          "A",
+			pathParameter:  "A",
 			expectedFairID: 0,
 			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
@@ -53,7 +53,7 @@ func TestFairByID(t *testing.T) {
 		},
 		{
 			name:           "Should execute the DeleteFairByID Function, however receive an internal_server_error with status code 500",
-			input:          "1",
+			pathParameter:  "1",
 			expectedFairID: 1,
 			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
@@ -73,7 +73,7 @@ func TestFairByID(t *testing.T) {
 			handler := handlers.NewHandler(service)
 			delete.NewFairByIDyHandler(handler, router)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("DELETE", fmt.Sprintf("/fairs/%v", tt.input), nil)
+			req, _ := http.NewRequest("DELETE", fmt.Sprintf("/fairs/%v", tt.pathParameter), nil)
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

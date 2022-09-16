@@ -82,8 +82,8 @@ type serviceMock struct {
 	service.FairService
 }
 
-func (sm *serviceMock) FindFairByID(ID int64) (entity.Fair, error) {
-	args := sm.Called(ID)
+func (sm *serviceMock) FindFairByID(id int64) (entity.Fair, error) {
+	args := sm.Called(id)
 	result, _ := args.Get(0).(entity.Fair)
 	return result, args.Error(1)
 }

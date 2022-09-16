@@ -8,6 +8,6 @@ type Handler struct {
 	Service service.FairService
 }
 
-func NewHandler(Service service.FairService) Handler {
-	return Handler{Service: Service}
+func NewHandler(service service.FairService) Handler {
+	return Handler{Service: service}
 }

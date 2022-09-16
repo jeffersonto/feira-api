@@ -81,7 +81,7 @@ type serviceMock struct {
 	service.FairService
 }
 
-func (sm *serviceMock) DeleteFairByID(ID int64) error {
-	args := sm.Called(ID)
+func (sm *serviceMock) DeleteFairByID(id int64) error {
+	args := sm.Called(id)
 	return args.Error(0)
 }

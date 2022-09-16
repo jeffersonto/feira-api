@@ -3,6 +3,8 @@ package post
 import (
 	"net/http"
 
+	"github.com/jeffersonto/feira-api/util/exceptions"
+
 	"github.com/jeffersonto/feira-api/dto"
 	"github.com/jeffersonto/feira-api/handlers"
 
@@ -12,7 +14,7 @@ import (
 )
 
 const (
-	URLNewFair = "/fairs"
+	urlNewFair = "/fairs"
 )
 
 type newFairHandler struct {
@@ -21,7 +23,7 @@ type newFairHandler struct {
 
 func NewFairHandler(handler handlers.Handler, r *gin.Engine) {
 	handle := newFairHandler{Handler: handler}
-	r.POST(URLNewFair, handle.NewFair())
+	r.POST(urlNewFair, handle.NewFair())
 }
 
 func (handler *newFairHandler) NewFair() gin.HandlerFunc {
@@ -34,7 +36,7 @@ func (handler *newFairHandler) NewFair() gin.HandlerFunc {
 		err := c.ShouldBindBodyWith(&newFair, binding.JSON)
 
 		if err != nil {
-			_ = c.Error(err)
+			_ = c.Error(exceptions.NewBadRequest(err))
 			return
 		}
 

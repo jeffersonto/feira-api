@@ -7,8 +7,8 @@ import (
 )
 
 type FairService interface {
-	FindFairByID(ID int64) (entity.Fair, error)
-	DeleteFairByID(ID int64) error
+	FindFairByID(id int64) (entity.Fair, error)
+	DeleteFairByID(id int64) error
 	SaveFair(newFair dto.Fair) error
 	UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error
 }
@@ -21,12 +21,12 @@ func NewFairService(repository fair.FairRepository) *Fair {
 	return &Fair{repository: repository}
 }
 
-func (service *Fair) FindFairByID(ID int64) (entity.Fair, error) {
-	return service.repository.GetByID(ID)
+func (service *Fair) FindFairByID(id int64) (entity.Fair, error) {
+	return service.repository.GetByID(id)
 }
 
-func (service *Fair) DeleteFairByID(ID int64) error {
-	return service.repository.DeleteByID(ID)
+func (service *Fair) DeleteFairByID(id int64) error {
+	return service.repository.DeleteByID(id)
 }
 
 func (service *Fair) SaveFair(newFair dto.Fair) error {

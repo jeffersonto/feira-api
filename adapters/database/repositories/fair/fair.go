@@ -2,9 +2,10 @@ package fair
 
 import (
 	"database/sql"
-	"feira-api/entity"
-	"feira-api/util/exceptions"
-	"feira-api/util/warmupdb"
+
+	"github.com/jeffersonto/feira-api/entity"
+	"github.com/jeffersonto/feira-api/util/exceptions"
+	"github.com/jeffersonto/feira-api/util/warmupdb"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3" // import driver for sqlite connection

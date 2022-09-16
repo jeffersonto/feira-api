@@ -1,10 +1,11 @@
 package warmupdb
 
 import (
-	"feira-api/entity"
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/jeffersonto/feira-api/entity"
 
 	"github.com/gocarina/gocsv"
 	"github.com/jmoiron/sqlx"

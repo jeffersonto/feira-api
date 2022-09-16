@@ -40,6 +40,6 @@ func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 		}
 
 		logrus.Tracef("Delete FairByID Finished")
-		c.Status(http.StatusAccepted)
+		c.Status(http.StatusNoContent)
 	}
 }

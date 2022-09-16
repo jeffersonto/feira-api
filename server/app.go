@@ -6,6 +6,7 @@ import (
 	"feira-api/handlers/delete"
 	"feira-api/handlers/get"
 	"feira-api/handlers/post"
+	"feira-api/handlers/put"
 	"feira-api/server/middleware"
 	"net/http"
 
@@ -37,6 +38,7 @@ func Run(port string) error {
 	get.NewFairByIDyHandler(handler, router)
 	delete.NewFairByIDyHandler(handler, router)
 	post.NewFairHandler(handler, router)
+	put.NewUpdateHandler(handler, router)
 
 	return router.Run(":" + port)
 }

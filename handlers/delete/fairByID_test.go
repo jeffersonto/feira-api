@@ -73,7 +73,7 @@ func TestFairByID(t *testing.T) {
 			handler := handlers.NewHandler(service)
 			delete.NewFairByIDyHandler(handler, router)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("DELETE", fmt.Sprintf("/fairs/%v", tt.pathParameter), nil)
+			req, _ := http.NewRequest("DELETE", fmt.Sprintf("/feiras/%v", tt.pathParameter), nil)
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

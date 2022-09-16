@@ -27,7 +27,7 @@ func TestFairByID(t *testing.T) {
 		expected       func(result *httptest.ResponseRecorder)
 	}{
 		{
-			name:           "Should successfully get and return status code 204",
+			name:           "Should successfully get by id and return status code 200",
 			pathParameter:  "1",
 			expectedFairID: 1,
 			warmUP: func(expectedFairID int64) {
@@ -74,7 +74,7 @@ func TestFairByID(t *testing.T) {
 			handler := handlers.NewHandler(service)
 			get.NewFairByIDyHandler(handler, router)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/fairs/%v", tt.pathParameter), nil)
+			req, _ := http.NewRequest("GET", fmt.Sprintf("/feiras/%v", tt.pathParameter), nil)
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

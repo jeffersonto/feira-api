@@ -121,7 +121,7 @@ func TestNewFair(t *testing.T) {
 			handler := handlers.NewHandler(service)
 			post.NewFairHandler(handler, router)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("POST", "/fairs", bytes.NewBufferString(tt.body))
+			req, _ := http.NewRequest("POST", "/feiras", bytes.NewBufferString(tt.body))
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

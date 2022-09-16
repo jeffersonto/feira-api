@@ -16,7 +16,7 @@ import (
 	"testing"
 )
 
-func TestNewFair(t *testing.T) {
+func TestUpdateFair(t *testing.T) {
 
 	var service *serviceMock
 
@@ -156,7 +156,7 @@ func TestNewFair(t *testing.T) {
 			handler := handlers.NewHandler(service)
 			put.NewUpdateHandler(handler, router)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("PUT", fmt.Sprintf("/fairs/%v", tt.pathParameter), bytes.NewBufferString(tt.body))
+			req, _ := http.NewRequest("PUT", fmt.Sprintf("/feiras/%v", tt.pathParameter), bytes.NewBufferString(tt.body))
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

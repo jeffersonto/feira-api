@@ -56,7 +56,7 @@ func TestNewFair(t *testing.T) {
 			},
 		},
 		{
-			name: "Should miss the longitude field and return status code 404",
+			name: "Should miss the longitude field and return status code 400",
 			body: `{
 						"latitude": -23558733,
 						"setor_censitario": 355030885000091,
@@ -79,7 +79,7 @@ func TestNewFair(t *testing.T) {
 				service.On("SaveFair", mock.Anything).Return(nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
-				assert.Equal(t, 500, result.Code)
+				assert.Equal(t, 400, result.Code)
 				service.AssertNumberOfCalls(t, "SaveFair", 0)
 			},
 		},

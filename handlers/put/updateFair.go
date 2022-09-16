@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	URLUpdateFair = "/fairs/:fairId"
+	urlUpdateFair = "/fairs/:fairId"
 )
 
 type updateFairHandler struct {
@@ -23,7 +23,7 @@ type updateFairHandler struct {
 
 func NewUpdateHandler(handler handlers.Handler, r *gin.Engine) {
 	handle := updateFairHandler{Handler: handler}
-	r.PUT(URLUpdateFair, handle.UpdateFair())
+	r.PUT(urlUpdateFair, handle.UpdateFair())
 }
 
 func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {

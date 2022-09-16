@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	URLByID = "/fairs/:fairId"
+	urlByID = "/fairs/:fairId"
 )
 
 type fairByIDHandler struct {
@@ -21,7 +21,7 @@ type fairByIDHandler struct {
 
 func NewFairByIDyHandler(handler handlers.Handler, r *gin.Engine) {
 	handle := fairByIDHandler{Handler: handler}
-	r.GET(URLByID, handle.FairByID())
+	r.GET(urlByID, handle.FairByID())
 }
 
 func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {

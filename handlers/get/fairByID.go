@@ -34,7 +34,7 @@ func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 			return
 		}
 
-		feira, err := handler.FairRepository.GetByID(fairID)
+		feira, err := handler.Service.FindFairByID(fairID)
 		if err != nil {
 			_ = c.Error(err)
 			return

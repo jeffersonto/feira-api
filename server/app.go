@@ -3,6 +3,8 @@ package server
 import (
 	"net/http"
 
+	"github.com/jeffersonto/feira-api/service"
+
 	"github.com/jeffersonto/feira-api/adapters/database/repositories/fair"
 	"github.com/jeffersonto/feira-api/handlers"
 	"github.com/jeffersonto/feira-api/handlers/delete"
@@ -26,7 +28,8 @@ func Run(port string) error {
 
 	defer fairRepositoryConnection.DB.Close()
 
-	handler := handlers.NewHandler(fairRepositoryConnection)
+	service := service.NewFairService(fairRepositoryConnection)
+	handler := handlers.NewHandler(service)
 
 	health := HealthChecker{}
 

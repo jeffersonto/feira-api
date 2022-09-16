@@ -38,7 +38,7 @@ func (handler *newFairHandler) NewFair() gin.HandlerFunc {
 			return
 		}
 
-		err = handler.FairRepository.Save(newFair.ToEntity())
+		err = handler.Service.SaveFair(newFair)
 		if err != nil {
 			_ = c.Error(err)
 			return

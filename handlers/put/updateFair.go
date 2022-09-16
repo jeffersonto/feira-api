@@ -45,7 +45,7 @@ func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {
 			return
 		}
 
-		err = handler.FairRepository.Update(fairID, updateFair.ToEntity())
+		err = handler.Service.UpdateFairByID(fairID, updateFair)
 		if err != nil {
 			_ = c.Error(err)
 			return

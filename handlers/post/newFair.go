@@ -1,9 +1,10 @@
 package post
 
 import (
-	"feira-api/dto"
-	"feira-api/handlers"
 	"net/http"
+
+	"github.com/jeffersonto/feira-api/dto"
+	"github.com/jeffersonto/feira-api/handlers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

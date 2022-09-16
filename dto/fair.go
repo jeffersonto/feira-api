@@ -1,6 +1,6 @@
 package dto
 
-import "feira-api/entity"
+import "github.com/jeffersonto/feira-api/entity"
 
 type Fair struct {
 	ID                  int64  `json:"id" form:"id"`

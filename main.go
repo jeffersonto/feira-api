@@ -1,8 +1,8 @@
 package main
 
 import (
-	"feira-api/config"
-	"feira-api/server"
+	"github.com/jeffersonto/feira-api/config"
+	"github.com/jeffersonto/feira-api/server"
 
 	"github.com/sirupsen/logrus"
 )

@@ -1,6 +1,6 @@
 package handlers
 
-import "feira-api/adapters/database/repositories/fair"
+import "github.com/jeffersonto/feira-api/adapters/database/repositories/fair"
 
 type Handler struct {
 	FairRepository fair.FairRepository

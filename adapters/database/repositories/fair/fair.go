@@ -14,6 +14,7 @@ type FairRepository interface {
 	GetByID(fairID int64) (entity.Fair, error)
 	DeleteByID(fairID int64) error
 	Save(fair entity.Fair) error
+	Update(id int64, fair entity.Fair) error
 }
 
 type Repository struct {
@@ -84,6 +85,40 @@ func (repo *Repository) Save(fair entity.Fair) error {
 		fair.Regiao5, fair.Regiao8, fair.NomeFeira,
 		fair.Registro, fair.Logradouro, fair.Numero,
 		fair.Bairro, fair.Referencia)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *Repository) Update(id int64, fair entity.Fair) error {
+	_, err := repo.DB.Exec(
+		"UPDATE fairs SET"+
+			" longitude = ?,"+
+			" latitude = ?,"+
+			" setor_censitario = ?,"+
+			" area_ponderacao = ?,"+
+			" codigo_ibge = ?, "+
+			" distrito = ?,"+
+			" codigo_subprefeitura = ?, "+
+			" subprefeitura = ?,"+
+			" regiao5 = ?,"+
+			" regiao8 = ?,"+
+			" nome_feira = ?,"+
+			" registro = ?,"+
+			" logradouro = ?,"+
+			" numero = ?,"+
+			" bairro = ?,"+
+			" referencia = ?"+
+			" WHERE id = ? ",
+		fair.Longitude, fair.Latitude, fair.SetorCensitario,
+		fair.AreaPonderacao, fair.CodigoIBGE, fair.Distrito,
+		fair.CodigoSubPrefeitura, fair.SubPrefeitura,
+		fair.Regiao5, fair.Regiao8, fair.NomeFeira,
+		fair.Registro, fair.Logradouro, fair.Numero,
+		fair.Bairro, fair.Referencia, id)
 
 	if err != nil {
 		return err

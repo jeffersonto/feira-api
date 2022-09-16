@@ -1,8 +1,9 @@
 package server
 
 import (
-	"github.com/jeffersonto/feira-api/service"
 	"net/http"
+
+	"github.com/jeffersonto/feira-api/service"
 
 	"github.com/jeffersonto/feira-api/adapters/database/repositories/fair"
 	"github.com/jeffersonto/feira-api/handlers"

@@ -3,9 +3,9 @@ package commons_test
 import (
 	"encoding/json"
 	"errors"
-	"feira-api/util/commons"
-	"feira-api/util/exceptions"
 	"fmt"
+	"github.com/jeffersonto/feira-api/util/commons"
+	"github.com/jeffersonto/feira-api/util/exceptions"
 	"reflect"
 	"testing"
 )

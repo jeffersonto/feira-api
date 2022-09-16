@@ -1,7 +1,7 @@
 package put
 
 import (
-	"github.com/jeffersonto/feira-api/util/exceptions"
+	"github.com/jeffersonto/feira-api/entity/exceptions"
 	"net/http"
 	"strings"
 
@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	urlUpdateFair = "/fairs/:fairId"
+	urlUpdateFair = "/feiras/:fairId"
 )
 
 type updateFairHandler struct {

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	urlByID = "/fairs/:fairId"
+	urlByID = "/feiras/:fairId"
 )
 
 type fairByIDHandler struct {

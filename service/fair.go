@@ -4,6 +4,7 @@ import (
 	"github.com/jeffersonto/feira-api/adapters/database/repositories/fair"
 	"github.com/jeffersonto/feira-api/dto"
 	"github.com/jeffersonto/feira-api/entity"
+	"github.com/jeffersonto/feira-api/entity/exceptions"
 )
 
 type FairService interface {
@@ -11,6 +12,7 @@ type FairService interface {
 	DeleteFairByID(id int64) error
 	SaveFair(newFair dto.Fair) error
 	UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error
+	FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error)
 }
 
 type Fair struct {
@@ -23,6 +25,19 @@ func NewFairService(repository fair.FairRepository) *Fair {
 
 func (service *Fair) FindFairByID(id int64) (entity.Fair, error) {
 	return service.repository.GetByID(id)
+}
+
+func (service *Fair) FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error) {
+	fairs, err := service.repository.GetByQueryID(filters.ToEntity())
+	if err != nil {
+		return fairs, err
+	}
+
+	if len(fairs) == 0 {
+		return fairs, exceptions.NewNoContent()
+	}
+
+	return service.repository.GetByQueryID(filters.ToEntity())
 }
 
 func (service *Fair) DeleteFairByID(id int64) error {

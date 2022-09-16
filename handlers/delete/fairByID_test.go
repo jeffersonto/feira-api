@@ -19,17 +19,19 @@ func TestFairByID(t *testing.T) {
 	var service *serviceMock
 
 	tests := []struct {
-		name     string
-		input    string
-		warmUP   func()
-		expected func(result *httptest.ResponseRecorder)
+		name           string
+		input          string
+		expectedFairID int64
+		warmUP         func(expectedFairID int64)
+		expected       func(result *httptest.ResponseRecorder)
 	}{
 		{
-			name:  "Should successfully delete and return status code 204",
-			input: "1",
-			warmUP: func() {
+			name:           "Should successfully delete and return status code 204",
+			input:          "1",
+			expectedFairID: 1,
+			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
-				service.On("DeleteFairByID", mock.Anything).Return(nil)
+				service.On("DeleteFairByID", expectedFairID).Return(nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 204, result.Code)
@@ -37,11 +39,12 @@ func TestFairByID(t *testing.T) {
 			},
 		},
 		{
-			name:  "Should not be able to convert the path parameter and return status code 400",
-			input: "A",
-			warmUP: func() {
+			name:           "Should not be able to convert the path parameter and return status code 400",
+			input:          "A",
+			expectedFairID: 0,
+			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
-				service.On("DeleteFairByID", mock.Anything).Return(nil)
+				service.On("DeleteFairByID", expectedFairID).Return(nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 400, result.Code)
@@ -49,11 +52,12 @@ func TestFairByID(t *testing.T) {
 			},
 		},
 		{
-			name:  "Should not be able to convert the path parameter and return status code 400",
-			input: "1",
-			warmUP: func() {
+			name:           "Should execute the DeleteFairByID Function, however receive an internal_server_error with status code 500",
+			input:          "1",
+			expectedFairID: 1,
+			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
-				service.On("DeleteFairByID", mock.Anything).Return(fmt.Errorf("internal_server_error"))
+				service.On("DeleteFairByID", expectedFairID).Return(fmt.Errorf("internal_server_error"))
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 500, result.Code)
@@ -63,7 +67,7 @@ func TestFairByID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.warmUP()
+			tt.warmUP(tt.expectedFairID)
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
 			handler := handlers.NewHandler(service)

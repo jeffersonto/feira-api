@@ -20,15 +20,17 @@ func TestFairByID(t *testing.T) {
 	var service *serviceMock
 
 	tests := []struct {
-		name     string
-		input    string
-		warmUP   func()
-		expected func(result *httptest.ResponseRecorder)
+		name           string
+		input          string
+		expectedFairID int64
+		warmUP         func(expectedFairID int64)
+		expected       func(result *httptest.ResponseRecorder)
 	}{
 		{
-			name:  "Should successfully get and return status code 204",
-			input: "1",
-			warmUP: func() {
+			name:           "Should successfully get and return status code 204",
+			input:          "1",
+			expectedFairID: 1,
+			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
 				service.On("FindFairByID", mock.Anything).Return(entity.Fair{ID: 1, NomeFeira: "Feira Teste"}, nil)
 			},
@@ -38,9 +40,10 @@ func TestFairByID(t *testing.T) {
 			},
 		},
 		{
-			name:  "Should not be able to convert the path parameter and return status code 400",
-			input: "A",
-			warmUP: func() {
+			name:           "Should not be able to convert the path parameter and return status code 400",
+			input:          "A",
+			expectedFairID: 0,
+			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
 				service.On("FindFairByID", mock.Anything).Return(entity.Fair{}, nil)
 			},
@@ -50,9 +53,10 @@ func TestFairByID(t *testing.T) {
 			},
 		},
 		{
-			name:  "Should not be able to convert the path parameter and return status code 400",
-			input: "1",
-			warmUP: func() {
+			name:           "Should execute the FindFairByID Function, however receive an internal_server_error with status code 500",
+			input:          "1",
+			expectedFairID: 1,
+			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
 				service.On("FindFairByID", mock.Anything).Return(entity.Fair{}, fmt.Errorf("internal_server_error"))
 			},
@@ -64,7 +68,7 @@ func TestFairByID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.warmUP()
+			tt.warmUP(tt.expectedFairID)
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
 			handler := handlers.NewHandler(service)

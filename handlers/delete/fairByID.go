@@ -34,7 +34,7 @@ func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 			return
 		}
 
-		err = handler.FairRepository.DeleteByID(fairID)
+		err = handler.Service.DeleteFairByID(fairID)
 		if err != nil {
 			_ = c.Error(err)
 			return

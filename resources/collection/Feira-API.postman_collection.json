@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "c73b6575-0597-4daf-88b2-79ff5f778c93",
+		"name": "Feira-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[Local] Busca Feira por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/feiras/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"feiras",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Local] Busca uma Feira Por Query",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/feiras?bairro=VL FORMOSA",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"feiras"
+					],
+					"query": [
+						{
+							"key": "bairro",
+							"value": "VL FORMOSA"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Local] Cria uma Nova Feira",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"longitude\": -46550164,\n    \"latitude\": -23558733,\n    \"setor_censitario\": 355030885000091,\n    \"area_ponderacao\": 3550308005040,\n    \"codigo_ibge\": \"87\",\n    \"distrito\": \"VILA FORMOSA\",\n    \"codigo_subprefeitura\": 26,\n    \"subprefeitura\": \"ARICANDUVA-FORMOSA-CARRAO\",\n    \"regiao5\": \"Leste\",\n    \"regiao8\": \"Leste 1\",\n    \"nome_feira\": \"VILA FORMOSA\",\n    \"registro\": \"4041-0\",\n    \"logradouro\": \"RUA MARAGOJIPE\",\n    \"numero\": \"S/N\",\n    \"bairro\": \"VL FORMOSA\",\n    \"referencia\": \"TV RUA PRETORIA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/feiras",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"feiras"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Local] Atualiza uma Feira Existente",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"longitude\": -46550164,\n    \"latitude\": -23558733,\n    \"setor_censitario\": 355030885000091,\n    \"area_ponderacao\": 3550308005040,\n    \"codigo_ibge\": \"87\",\n    \"distrito\": \"VILA FORMOSA\",\n    \"codigo_subprefeitura\": 26,\n    \"subprefeitura\": \"ARICANDUVA-FORMOSA-CARRAO\",\n    \"regiao5\": \"Leste\",\n    \"regiao8\": \"Leste 1\",\n    \"nome_feira\": \"VILA FORMOSA\",\n    \"registro\": \"4041-0\",\n    \"logradouro\": \"RUA MARAGOJIPE\",\n    \"numero\": \"S/N\",\n    \"bairro\": \"VL FORMOSA\",\n    \"referencia\": \"TV RUA PRETORIA - 3\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/feiras/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"feiras",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Local] Deleta uma Feira por ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/feiras/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"feiras",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

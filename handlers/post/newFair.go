@@ -1,8 +1,9 @@
 package post
 
 import (
-	"github.com/jeffersonto/feira-api/entity/exceptions"
 	"net/http"
+
+	"github.com/jeffersonto/feira-api/entity/exceptions"
 
 	"github.com/jeffersonto/feira-api/dto"
 	"github.com/jeffersonto/feira-api/handlers"

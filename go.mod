@@ -3,6 +3,7 @@ module github.com/jeffersonto/feira-api
 go 1.17
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gocarina/gocsv v0.0.0-20220914091333-ceebdd90b590
 	github.com/jmoiron/sqlx v1.3.5

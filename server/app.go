@@ -3,6 +3,8 @@ package server
 import (
 	"net/http"
 
+	config "github.com/jeffersonto/feira-api/config/db"
+
 	"github.com/jeffersonto/feira-api/service"
 
 	"github.com/jeffersonto/feira-api/adapters/database/repositories/fair"
@@ -20,7 +22,13 @@ import (
 type HealthChecker struct{}
 
 func Run(port string) error {
-	fairRepositoryConnection, err := fair.NewRepository()
+	dbx, err := config.DB()
+	if err != nil {
+		logrus.Errorf("error running server: %+v", err)
+		panic(err)
+	}
+
+	fairRepositoryConnection, err := fair.NewRepository(dbx)
 	if err != nil {
 		logrus.Errorf("error running server: %+v", err)
 		panic(err)

@@ -2,13 +2,12 @@ package fair
 
 import (
 	"database/sql"
+
 	"github.com/jeffersonto/feira-api/entity/exceptions"
 
 	"github.com/jeffersonto/feira-api/entity"
-	"github.com/jeffersonto/feira-api/util/warmupdb"
-
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" // import driver for sqlite connection
 )
 
 type FairRepository interface {
@@ -23,24 +22,7 @@ type Repository struct {
 	DB *sqlx.DB
 }
 
-func NewRepository() (*Repository, error) {
-	db, err := sqlx.Connect("sqlite3", "file::memory:?cache=shared")
-	if err != nil {
-		return nil, err
-	}
-
-	db.SetMaxIdleConns(20)
-	db.SetConnMaxLifetime(-1)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = warmupdb.WarmUp(db)
-	if err != nil {
-		return nil, err
-	}
-
+func NewRepository(db *sqlx.DB) (*Repository, error) {
 	return &Repository{
 		DB: db,
 	}, nil

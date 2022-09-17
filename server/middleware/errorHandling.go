@@ -1,8 +1,9 @@
 package middleware
 
 import (
-	"feira-api/util/exceptions"
 	"reflect"
+
+	"github.com/jeffersonto/feira-api/entity/exceptions"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

@@ -1,9 +1,12 @@
 package post
 
 import (
-	"feira-api/dto"
-	"feira-api/handlers"
 	"net/http"
+
+	"github.com/jeffersonto/feira-api/entity/exceptions"
+
+	"github.com/jeffersonto/feira-api/dto"
+	"github.com/jeffersonto/feira-api/handlers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -11,7 +14,7 @@ import (
 )
 
 const (
-	URLNewFair = "/fairs"
+	urlNewFair = "/feiras"
 )
 
 type newFairHandler struct {
@@ -20,7 +23,7 @@ type newFairHandler struct {
 
 func NewFairHandler(handler handlers.Handler, r *gin.Engine) {
 	handle := newFairHandler{Handler: handler}
-	r.POST(URLNewFair, handle.NewFair())
+	r.POST(urlNewFair, handle.NewFair())
 }
 
 func (handler *newFairHandler) NewFair() gin.HandlerFunc {
@@ -33,11 +36,11 @@ func (handler *newFairHandler) NewFair() gin.HandlerFunc {
 		err := c.ShouldBindBodyWith(&newFair, binding.JSON)
 
 		if err != nil {
-			_ = c.Error(err)
+			_ = c.Error(exceptions.NewBadRequest(err))
 			return
 		}
 
-		err = handler.FairRepository.Save(newFair.ToEntity())
+		err = handler.Service.SaveFair(newFair)
 		if err != nil {
 			_ = c.Error(err)
 			return

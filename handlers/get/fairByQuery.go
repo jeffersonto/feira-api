@@ -1,18 +1,18 @@
 package get
 
 import (
-	"feira-api/handlers"
-	"feira-api/util/commons"
-	"feira-api/util/exceptions"
 	"net/http"
-	"strings"
+
+	"github.com/jeffersonto/feira-api/entity/exceptions"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jeffersonto/feira-api/dto"
+	"github.com/jeffersonto/feira-api/handlers"
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	URLByQuery = "/fairs"
+	URLByQuery = "/feiras"
 )
 
 type fairByQueryHandler struct {
@@ -26,14 +26,10 @@ func NewFairByQueryHandler(handler handlers.Handler, r *gin.Engine) {
 
 func (handler *fairByQueryHandler) FairByQuery() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var (
+			queryParameters dto.QueryParameters
+		)
 		logrus.Tracef("Get FairByQuery Initializing")
-
-		var queryParameters struct {
-			Distrito  string `form:"distrito"`
-			Regiao5   string `form:"regiao5"`
-			NomeFeira string `form:"nomeFeira"`
-			Bairro    string `form:"bairro"`
-		}
 
 		logrus.Infof("query=%+v", c.Request.URL.Query())
 		if err := c.ShouldBindQuery(&queryParameters); err != nil {
@@ -42,13 +38,7 @@ func (handler *fairByQueryHandler) FairByQuery() gin.HandlerFunc {
 			return
 		}
 
-		fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		feira, err := handler.FairRepository.GetByID(fairID)
+		feira, err := handler.Service.FindFairByQuery(queryParameters)
 		if err != nil {
 			_ = c.Error(err)
 			return

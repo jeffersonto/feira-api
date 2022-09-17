@@ -1,17 +1,18 @@
 package delete
 
 import (
-	"feira-api/handlers"
-	"feira-api/util/commons"
 	"net/http"
 	"strings"
+
+	"github.com/jeffersonto/feira-api/handlers"
+	"github.com/jeffersonto/feira-api/util/commons"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	URLByID = "/fairs/:fairId"
+	urlByID = "/feiras/:fairId"
 )
 
 type fairByIDHandler struct {
@@ -20,7 +21,7 @@ type fairByIDHandler struct {
 
 func NewFairByIDyHandler(handler handlers.Handler, r *gin.Engine) {
 	handle := fairByIDHandler{Handler: handler}
-	r.DELETE(URLByID, handle.FairByID())
+	r.DELETE(urlByID, handle.FairByID())
 }
 
 func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
@@ -33,13 +34,13 @@ func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 			return
 		}
 
-		err = handler.FairRepository.DeleteByID(fairID)
+		err = handler.Service.DeleteFairByID(fairID)
 		if err != nil {
 			_ = c.Error(err)
 			return
 		}
 
 		logrus.Tracef("Delete FairByID Finished")
-		c.Status(http.StatusAccepted)
+		c.Status(http.StatusNoContent)
 	}
 }

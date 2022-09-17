@@ -1,11 +1,13 @@
 package handlers
 
-import "feira-api/adapters/database/repositories/fair"
+import (
+	"github.com/jeffersonto/feira-api/service"
+)
 
 type Handler struct {
-	FairRepository fair.FairRepository
+	Service service.FairService
 }
 
-func NewHandler(fairRepository fair.FairRepository) Handler {
-	return Handler{FairRepository: fairRepository}
+func NewHandler(service service.FairService) Handler {
+	return Handler{Service: service}
 }

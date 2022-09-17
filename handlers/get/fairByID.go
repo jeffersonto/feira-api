@@ -1,17 +1,18 @@
 package get
 
 import (
-	"feira-api/handlers"
-	"feira-api/util/commons"
 	"net/http"
 	"strings"
+
+	"github.com/jeffersonto/feira-api/handlers"
+	"github.com/jeffersonto/feira-api/util/commons"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	URLByID = "/fairs/:fairId"
+	urlByID = "/feiras/:fairId"
 )
 
 type fairByIDHandler struct {
@@ -20,7 +21,7 @@ type fairByIDHandler struct {
 
 func NewFairByIDyHandler(handler handlers.Handler, r *gin.Engine) {
 	handle := fairByIDHandler{Handler: handler}
-	r.GET(URLByID, handle.FairByID())
+	r.GET(urlByID, handle.FairByID())
 }
 
 func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
@@ -33,7 +34,7 @@ func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 			return
 		}
 
-		feira, err := handler.FairRepository.GetByID(fairID)
+		feira, err := handler.Service.FindFairByID(fairID)
 		if err != nil {
 			_ = c.Error(err)
 			return

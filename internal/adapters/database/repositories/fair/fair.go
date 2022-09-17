@@ -2,7 +2,8 @@ package fair
 
 import (
 	"database/sql"
-	entity2 "github.com/jeffersonto/feira-api/internal/entity"
+
+	"github.com/jeffersonto/feira-api/internal/entity"
 	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 
 	"github.com/jmoiron/sqlx"
@@ -10,11 +11,11 @@ import (
 )
 
 type FairRepository interface {
-	GetByID(fairID int64) (entity2.Fair, error)
+	GetByID(fairID int64) (entity.Fair, error)
 	DeleteByID(fairID int64) error
-	Save(fair entity2.Fair) error
-	Update(id int64, fair entity2.Fair) error
-	GetByQueryID(filters entity2.Filter) ([]entity2.Fair, error)
+	Save(fair entity.Fair) error
+	Update(id int64, fair entity.Fair) error
+	GetByQueryID(filters entity.Filter) ([]entity.Fair, error)
 }
 
 type Repository struct {
@@ -27,14 +28,14 @@ func NewRepository(db *sqlx.DB) (*Repository, error) {
 	}, nil
 }
 
-func (repo *Repository) GetByID(fairID int64) (entity2.Fair, error) {
+func (repo *Repository) GetByID(fairID int64) (entity.Fair, error) {
 	var (
-		fair = entity2.Fair{}
+		fair = entity.Fair{}
 	)
 	err := repo.DB.Get(&fair, "SELECT id, longitude, latitude, setor_censitario, area_ponderacao,"+
 		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira,"+
 		" registro, logradouro, numero, bairro, referencia "+
-		" FROM fairs "+
+		" FROM feiras_livres "+
 		" WHERE id = ? ", fairID)
 	switch {
 	case err == sql.ErrNoRows:
@@ -46,13 +47,13 @@ func (repo *Repository) GetByID(fairID int64) (entity2.Fair, error) {
 	}
 }
 
-func (repo *Repository) GetByQueryID(filters entity2.Filter) ([]entity2.Fair, error) {
+func (repo *Repository) GetByQueryID(filters entity.Filter) ([]entity.Fair, error) {
 	parametersForQuery := make([]interface{}, 0)
 
 	query := "SELECT id, longitude, latitude, setor_censitario, area_ponderacao," +
 		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5," +
 		" regiao8, nome_feira, registro, logradouro, numero, bairro, referencia " +
-		" FROM fairs " +
+		" FROM feiras_livres " +
 		" WHERE 1=1 "
 
 	if filters.Distrito != "" {
@@ -75,7 +76,7 @@ func (repo *Repository) GetByQueryID(filters entity2.Filter) ([]entity2.Fair, er
 		parametersForQuery = append(parametersForQuery, filters.Bairro)
 	}
 
-	fairs := make([]entity2.Fair, 0)
+	fairs := make([]entity.Fair, 0)
 
 	var rows *sql.Rows
 
@@ -88,7 +89,7 @@ func (repo *Repository) GetByQueryID(filters entity2.Filter) ([]entity2.Fair, er
 	defer rows.Close()
 
 	for rows.Next() {
-		var data entity2.Fair
+		var data entity.Fair
 		err = rows.Scan(&data.ID, &data.Longitude, &data.Latitude, &data.SetorCensitario, &data.AreaPonderacao,
 			&data.CodigoIBGE, &data.Distrito, &data.CodigoSubPrefeitura, &data.SubPrefeitura, &data.Regiao5,
 			&data.Regiao8, &data.NomeFeira, &data.Registro, &data.Logradouro, &data.Numero, &data.Bairro, &data.Referencia)
@@ -107,7 +108,7 @@ func (repo *Repository) GetByQueryID(filters entity2.Filter) ([]entity2.Fair, er
 
 func (repo *Repository) DeleteByID(fairID int64) error {
 	_, err := repo.DB.Exec(
-		"DELETE FROM fairs"+
+		"DELETE FROM feiras_livres"+
 			" WHERE id = ? ", fairID)
 
 	if err != nil {
@@ -117,9 +118,9 @@ func (repo *Repository) DeleteByID(fairID int64) error {
 	return nil
 }
 
-func (repo *Repository) Save(fair entity2.Fair) error {
+func (repo *Repository) Save(fair entity.Fair) error {
 	_, err := repo.DB.Exec(
-		"INSERT INTO fairs (longitude, latitude, setor_censitario, area_ponderacao,"+
+		"INSERT INTO feiras_livres (longitude, latitude, setor_censitario, area_ponderacao,"+
 			" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira,"+
 			"registro, logradouro, numero, bairro, referencia) "+
 			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -137,9 +138,9 @@ func (repo *Repository) Save(fair entity2.Fair) error {
 	return nil
 }
 
-func (repo *Repository) Update(id int64, fair entity2.Fair) error {
+func (repo *Repository) Update(id int64, fair entity.Fair) error {
 	_, err := repo.DB.Exec(
-		"UPDATE fairs SET"+
+		"UPDATE feiras_livres SET"+
 			" longitude = ?,"+
 			" latitude = ?,"+
 			" setor_censitario = ?,"+

@@ -1,10 +1,11 @@
 package delete
 
 import (
-	"github.com/jeffersonto/feira-api/internal/handlers"
-	"github.com/jeffersonto/feira-api/pkg/commons"
 	"net/http"
 	"strings"
+
+	"github.com/jeffersonto/feira-api/internal/handlers"
+	"github.com/jeffersonto/feira-api/pkg/commons"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

@@ -26,7 +26,7 @@
 			"response": []
 		},
 		{
-			"name": "[Local] Busca uma Feira Por Query",
+			"name": "[Local] Busca Feiras Por Query",
 			"request": {
 				"method": "GET",
 				"header": [],

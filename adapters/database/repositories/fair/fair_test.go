@@ -308,16 +308,16 @@ func TestSave(t *testing.T) {
 						fair.CodigoIBGE, fair.Distrito, fair.CodigoSubPrefeitura, fair.SubPrefeitura,
 						fair.Regiao5, fair.Regiao8, fair.NomeFeira, fair.Registro, fair.Logradouro,
 						fair.Numero, fair.Bairro, fair.Referencia).
-					WillReturnError(errors.New("error deleting rows"))
+					WillReturnError(errors.New("error saving rows"))
 			},
 			expected: func(err error) {
 				assert.NotNil(t, err)
 				assert.Error(t, err)
-				assert.Equal(t, "error deleting rows", err.Error())
+				assert.Equal(t, "error saving rows", err.Error())
 			},
 		},
 		{
-			name:  "Should delete correctly",
+			name:  "Should save correctly",
 			input: fairInput,
 			warmUP: func(fair entity.Fair) {
 				mock.ExpectExec(regexp.QuoteMeta(query)).
@@ -337,6 +337,109 @@ func TestSave(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.warmUP(tt.input)
 			err := sqlClient.Save(tt.input)
+			tt.expected(err)
+		})
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	var (
+		fairInput = entity.Fair{
+			ID:                  880,
+			Longitude:           -46450426,
+			Latitude:            -23602582,
+			SetorCensitario:     355030833000022,
+			AreaPonderacao:      3550308005274,
+			CodigoIBGE:          "32",
+			Distrito:            "IGUATEMI",
+			CodigoSubPrefeitura: 30,
+			SubPrefeitura:       "SAO MATEUS",
+			Regiao5:             "Leste",
+			Regiao8:             "Leste 2",
+			NomeFeira:           "JD.BOA ESPERANCA",
+			Registro:            "5171-3",
+			Logradouro:          "RUA IGUPIARA",
+			Numero:              "S/N",
+			Bairro:              "JD BOA ESPERANCA",
+			Referencia:          "",
+		}
+	)
+
+	type input struct {
+		fairID int64
+		fair   entity.Fair
+	}
+
+	sqlClient, mock := NewMock()
+	query := "UPDATE fairs SET" +
+		" longitude = ?," +
+		" latitude = ?," +
+		" setor_censitario = ?," +
+		" area_ponderacao = ?," +
+		" codigo_ibge = ?, " +
+		" distrito = ?," +
+		" codigo_subprefeitura = ?, " +
+		" subprefeitura = ?," +
+		" regiao5 = ?," +
+		" regiao8 = ?," +
+		" nome_feira = ?," +
+		" registro = ?," +
+		" logradouro = ?," +
+		" numero = ?," +
+		" bairro = ?," +
+		" referencia = ?" +
+		" WHERE id = ? "
+
+	tests := []struct {
+		name     string
+		input    input
+		warmUP   func(fair input)
+		expected func(err error)
+	}{
+		{
+			name: "Should return a generic error when trying to update",
+			input: input{
+				fairID: 10,
+				fair:   fairInput,
+			},
+			warmUP: func(data input) {
+				mock.ExpectExec(regexp.QuoteMeta(query)).
+					WithArgs(data.fair.Longitude, data.fair.Latitude, data.fair.SetorCensitario, data.fair.AreaPonderacao,
+						data.fair.CodigoIBGE, data.fair.Distrito, data.fair.CodigoSubPrefeitura, data.fair.SubPrefeitura,
+						data.fair.Regiao5, data.fair.Regiao8, data.fair.NomeFeira, data.fair.Registro, data.fair.Logradouro,
+						data.fair.Numero, data.fair.Bairro, data.fair.Referencia, data.fairID).
+					WillReturnError(errors.New("error updating rows"))
+			},
+			expected: func(err error) {
+				assert.NotNil(t, err)
+				assert.Error(t, err)
+				assert.Equal(t, "error updating rows", err.Error())
+			},
+		},
+		{
+			name: "Should update correctly",
+			input: input{
+				fairID: 10,
+				fair:   fairInput,
+			},
+			warmUP: func(data input) {
+				mock.ExpectExec(regexp.QuoteMeta(query)).
+					WithArgs(data.fair.Longitude, data.fair.Latitude, data.fair.SetorCensitario, data.fair.AreaPonderacao,
+						data.fair.CodigoIBGE, data.fair.Distrito, data.fair.CodigoSubPrefeitura, data.fair.SubPrefeitura,
+						data.fair.Regiao5, data.fair.Regiao8, data.fair.NomeFeira, data.fair.Registro, data.fair.Logradouro,
+						data.fair.Numero, data.fair.Bairro, data.fair.Referencia, data.fairID).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			expected: func(err error) {
+				assert.Nil(t, err)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.warmUP(tt.input)
+			err := sqlClient.Update(tt.input.fairID, tt.input.fair)
 			tt.expected(err)
 		})
 	}

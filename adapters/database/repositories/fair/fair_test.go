@@ -215,6 +215,55 @@ func TestGetByQueryID(t *testing.T) {
 	}
 }
 
+func TestDeleteByID(t *testing.T) {
+
+	sqlClient, mock := NewMock()
+	query := "DELETE FROM fairs" +
+		" WHERE id = ? "
+
+	tests := []struct {
+		name     string
+		input    int64
+		warmUP   func(id int64)
+		expected func(err error)
+	}{
+		{
+			name:  "Should return error generic deleting rows",
+			input: 1,
+			warmUP: func(id int64) {
+				mock.ExpectExec(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnError(errors.New("error deleting rows"))
+			},
+			expected: func(err error) {
+				assert.NotNil(t, err)
+				assert.Error(t, err)
+				assert.Equal(t, "error deleting rows", err.Error())
+			},
+		},
+		{
+			name:  "Should delete correctly",
+			input: 1,
+			warmUP: func(id int64) {
+				mock.ExpectExec(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			expected: func(err error) {
+				assert.Nil(t, err)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.warmUP(tt.input)
+			err := sqlClient.DeleteByID(tt.input)
+			tt.expected(err)
+		})
+	}
+}
+
 func NewMock() (*fair.Repository, sqlmock.Sqlmock) {
 	db, mock, err := sqlmock.New()
 	if err != nil {

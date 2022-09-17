@@ -2,9 +2,10 @@ package warmupdb
 
 import (
 	"fmt"
-	"github.com/jeffersonto/feira-api/internal/entity"
 	"os"
 	"strings"
+
+	"github.com/jeffersonto/feira-api/internal/entity"
 
 	"github.com/gocarina/gocsv"
 	"github.com/jmoiron/sqlx"
@@ -25,7 +26,7 @@ func WarmUp(db *sqlx.DB) error {
 }
 
 func CreateTablesInMemory(db *sqlx.DB) error {
-	table := "CREATE TABLE fairs " +
+	table := "CREATE TABLE feiras_livres " +
 		"  ( " +
 		"     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
 		"     longitude INTEGER NOT NULL, " +
@@ -97,7 +98,7 @@ func InsertData(db *sqlx.DB) error {
 		valueArgs = append(valueArgs, post.Referencia)
 	}
 
-	stmt := fmt.Sprintf("INSERT INTO fairs (id, longitude, latitude, setor_censitario, area_ponderacao, "+
+	stmt := fmt.Sprintf("INSERT INTO feiras_livres (id, longitude, latitude, setor_censitario, area_ponderacao, "+
 		"codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira, registro, logradouro, "+
 		"numero, bairro, referencia) VALUES %s", strings.Join(valueStrings, ","))
 	_, err = db.Exec(stmt, valueArgs...)

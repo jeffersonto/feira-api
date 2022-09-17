@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jeffersonto/feira-api/cmd/server/middleware"
 	"github.com/jeffersonto/feira-api/internal/handlers"
-	delete2 "github.com/jeffersonto/feira-api/internal/handlers/delete"
+	"github.com/jeffersonto/feira-api/internal/handlers/delete"
 	"github.com/jeffersonto/feira-api/internal/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -71,7 +71,7 @@ func TestFairByID(t *testing.T) {
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
 			handler := handlers.NewHandler(service)
-			delete2.NewFairByIDyHandler(handler, router)
+			delete.NewFairByIDyHandler(handler, router)
 			response := httptest.NewRecorder()
 			req, _ := http.NewRequest("DELETE", fmt.Sprintf("/feiras/%v", tt.pathParameter), nil)
 			router.ServeHTTP(response, req)

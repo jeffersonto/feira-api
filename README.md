@@ -51,7 +51,7 @@ go mod tidy
 
 3. Executar o run do GO
 ```
-go run github.com/jeffersonto/feira-api
+go run github.com/jeffersonto/feira-api/cmd
 ```
 
 Ou abrir o projeto em sua IDE preferida e executá-lo através de atalhos disponíveis.

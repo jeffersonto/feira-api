@@ -264,6 +264,84 @@ func TestDeleteByID(t *testing.T) {
 	}
 }
 
+func TestSave(t *testing.T) {
+	var (
+		fairInput = entity.Fair{
+			ID:                  880,
+			Longitude:           -46450426,
+			Latitude:            -23602582,
+			SetorCensitario:     355030833000022,
+			AreaPonderacao:      3550308005274,
+			CodigoIBGE:          "32",
+			Distrito:            "IGUATEMI",
+			CodigoSubPrefeitura: 30,
+			SubPrefeitura:       "SAO MATEUS",
+			Regiao5:             "Leste",
+			Regiao8:             "Leste 2",
+			NomeFeira:           "JD.BOA ESPERANCA",
+			Registro:            "5171-3",
+			Logradouro:          "RUA IGUPIARA",
+			Numero:              "S/N",
+			Bairro:              "JD BOA ESPERANCA",
+			Referencia:          "",
+		}
+	)
+
+	sqlClient, mock := NewMock()
+	query := "INSERT INTO fairs (longitude, latitude, setor_censitario, area_ponderacao," +
+		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira," +
+		"registro, logradouro, numero, bairro, referencia) " +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
+	tests := []struct {
+		name     string
+		input    entity.Fair
+		warmUP   func(fair entity.Fair)
+		expected func(err error)
+	}{
+		{
+			name:  "Should return a generic error when trying to insert",
+			input: fairInput,
+			warmUP: func(fair entity.Fair) {
+				mock.ExpectExec(regexp.QuoteMeta(query)).
+					WithArgs(fair.Longitude, fair.Latitude, fair.SetorCensitario, fair.AreaPonderacao,
+						fair.CodigoIBGE, fair.Distrito, fair.CodigoSubPrefeitura, fair.SubPrefeitura,
+						fair.Regiao5, fair.Regiao8, fair.NomeFeira, fair.Registro, fair.Logradouro,
+						fair.Numero, fair.Bairro, fair.Referencia).
+					WillReturnError(errors.New("error deleting rows"))
+			},
+			expected: func(err error) {
+				assert.NotNil(t, err)
+				assert.Error(t, err)
+				assert.Equal(t, "error deleting rows", err.Error())
+			},
+		},
+		{
+			name:  "Should delete correctly",
+			input: fairInput,
+			warmUP: func(fair entity.Fair) {
+				mock.ExpectExec(regexp.QuoteMeta(query)).
+					WithArgs(fair.Longitude, fair.Latitude, fair.SetorCensitario, fair.AreaPonderacao,
+						fair.CodigoIBGE, fair.Distrito, fair.CodigoSubPrefeitura, fair.SubPrefeitura,
+						fair.Regiao5, fair.Regiao8, fair.NomeFeira, fair.Registro, fair.Logradouro,
+						fair.Numero, fair.Bairro, fair.Referencia).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			expected: func(err error) {
+				assert.Nil(t, err)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.warmUP(tt.input)
+			err := sqlClient.Save(tt.input)
+			tt.expected(err)
+		})
+	}
+}
+
 func NewMock() (*fair.Repository, sqlmock.Sqlmock) {
 	db, mock, err := sqlmock.New()
 	if err != nil {

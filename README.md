@@ -30,6 +30,9 @@ Este projeto visa carregar informações das feiras públicas disponibilizadas n
 
 [2. Banco de Dados em Memória (SQL Lite) para Gerenciamento de Feiras](docs/adr/0002-banco-de-dados-em-memoria-para-gerenciamento-de-feiras.md)
 
+[3. Layout de Estrutura de Pasta e Arquitetura de Software](docs/adr/0003-layout-de-estrutura-de-pasta-e-arquitetura-de-software.md)
+
+
 ## Requisitos
 - [Git](https://git-scm.com/downloads)
 - [Golang 1.17 ou superior](https://go.dev/doc/install)

@@ -100,6 +100,16 @@ curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 >
 > > 500 - Internal Server Error
 
+- Busca todas as feiras
+```
+curl --location --request GET 'http://localhost:8080/feiras''
+```
+> > 200 - Created
+>
+> > 204 - No Content
+>
+> > 500 - Internal Server Error
+
 - Cria uma Nova Feira
 ```
 curl --location --request POST 'http://localhost:8080/feiras' \

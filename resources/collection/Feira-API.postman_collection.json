@@ -51,6 +51,25 @@
 			"response": []
 		},
 		{
+			"name": "[Local] Busca todas as feiras",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/feiras",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"feiras"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "[Local] Cria uma Nova Feira",
 			"request": {
 				"method": "POST",

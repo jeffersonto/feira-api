@@ -34,6 +34,7 @@ Este projeto visa carregar informações das feiras públicas disponibilizadas n
 
 [4. Testes focados no core da aplicação e percentual de cobertura de testes](docs/adr/004-testes-focados-no-core-da-aplicacao-e-percentual-de-cobertura-de-testes.md)
 
+[5. Desnormalização da tabela de feiras livres](docs/adr/004-testes-focados-no-core-da-aplicacao-e-percentual-de-cobertura-de-testes.md)
 
 ## Requisitos
 - [Git](https://git-scm.com/downloads)

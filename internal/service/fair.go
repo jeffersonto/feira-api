@@ -37,7 +37,7 @@ func (service *Fair) FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair
 		return fairs, exceptions.NewNoContent()
 	}
 
-	return service.repository.GetByQueryID(filters.ToEntity())
+	return fairs, nil
 }
 
 func (service *Fair) DeleteFairByID(id int64) error {

@@ -57,22 +57,22 @@ func (repo *Repository) GetByQueryID(filters entity.Filter) ([]entity.Fair, erro
 		" WHERE 1=1 "
 
 	if filters.Distrito != "" {
-		query += " AND distrito = ?"
+		query += " AND UPPER(TRIM(distrito)) = UPPER(TRIM(?))"
 		parametersForQuery = append(parametersForQuery, filters.Distrito)
 	}
 
 	if filters.Regiao5 != "" {
-		query += " AND regiao5 = ?"
+		query += " AND UPPER(TRIM(regiao5)) = UPPER(TRIM(?))"
 		parametersForQuery = append(parametersForQuery, filters.Regiao5)
 	}
 
 	if filters.NomeFeira != "" {
-		query += " AND nome_feira = ?"
+		query += " AND UPPER(TRIM(nome_feira)) = UPPER(TRIM(?))"
 		parametersForQuery = append(parametersForQuery, filters.NomeFeira)
 	}
 
 	if filters.Bairro != "" {
-		query += " AND bairro = ?"
+		query += " AND UPPER(TRIM(bairro)) = UPPER(TRIM(?))"
 		parametersForQuery = append(parametersForQuery, filters.Bairro)
 	}
 

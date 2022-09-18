@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jeffersonto/feira-api/cmd/server/middleware"
 	"github.com/jeffersonto/feira-api/internal/entity"
-	"github.com/jeffersonto/feira-api/internal/handlers"
-	"github.com/jeffersonto/feira-api/internal/handlers/get"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/get"
 	"github.com/jeffersonto/feira-api/internal/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -71,10 +71,11 @@ func TestFairByID(t *testing.T) {
 			tt.warmUP(tt.expectedFairID)
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
-			handler := handlers.NewHandler(service)
-			get.NewFairByIDyHandler(handler, router)
+			routerGroupV1 := router.Group("/v1")
+			handler := v1.NewHandler(service, routerGroupV1)
+			get.NewFairByIDyHandler(handler)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/feiras/%v", tt.pathParameter), nil)
+			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/feiras/%v", tt.pathParameter), nil)
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

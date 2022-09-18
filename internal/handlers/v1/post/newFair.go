@@ -3,12 +3,12 @@ package post
 import (
 	"net/http"
 
-	"github.com/jeffersonto/feira-api/internal/dto"
-	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
-	"github.com/jeffersonto/feira-api/internal/handlers"
+	v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/jeffersonto/feira-api/internal/dto"
+	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,12 +17,12 @@ const (
 )
 
 type newFairHandler struct {
-	handlers.Handler
+	v1.Handler
 }
 
-func NewFairHandler(handler handlers.Handler, r *gin.Engine) {
+func NewFairHandler(handler v1.Handler) {
 	handle := newFairHandler{Handler: handler}
-	r.POST(urlNewFair, handle.NewFair())
+	handle.RouterGroup.POST(urlNewFair, handle.NewFair())
 }
 
 func (handler *newFairHandler) NewFair() gin.HandlerFunc {

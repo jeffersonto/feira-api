@@ -1,4 +1,4 @@
-package put_test
+package post_test
 
 import (
 	"bytes"
@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jeffersonto/feira-api/cmd/server/middleware"
 	"github.com/jeffersonto/feira-api/internal/dto"
-	"github.com/jeffersonto/feira-api/internal/handlers"
-	"github.com/jeffersonto/feira-api/internal/handlers/put"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/post"
 	"github.com/jeffersonto/feira-api/internal/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -16,20 +16,18 @@ import (
 	"testing"
 )
 
-func TestUpdateFair(t *testing.T) {
+func TestNewFair(t *testing.T) {
 
 	var service *serviceMock
 
 	tests := []struct {
-		name          string
-		pathParameter string
-		body          string
-		warmUP        func()
-		expected      func(result *httptest.ResponseRecorder)
+		name     string
+		body     string
+		warmUP   func()
+		expected func(result *httptest.ResponseRecorder)
 	}{
 		{
-			name:          "Should successfully get and return status code 200",
-			pathParameter: "1",
+			name: "Should successfully get and return status code 204",
 			body: `{
 						"longitude": -46550164,
 						"latitude": -23558733,
@@ -50,16 +48,15 @@ func TestUpdateFair(t *testing.T) {
 				}`,
 			warmUP: func() {
 				service = new(serviceMock)
-				service.On("UpdateFairByID", mock.Anything, mock.Anything).Return(nil)
+				service.On("SaveFair", mock.Anything).Return(nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
-				assert.Equal(t, 200, result.Code)
-				service.AssertNumberOfCalls(t, "UpdateFairByID", 1)
+				assert.Equal(t, 201, result.Code)
+				service.AssertNumberOfCalls(t, "SaveFair", 1)
 			},
 		},
 		{
-			name:          "Should miss the longitude field and return status code 400",
-			pathParameter: "1",
+			name: "Should miss the longitude field and return status code 400",
 			body: `{
 						"latitude": -23558733,
 						"setor_censitario": 355030885000091,
@@ -79,16 +76,15 @@ func TestUpdateFair(t *testing.T) {
 				}`,
 			warmUP: func() {
 				service = new(serviceMock)
-				service.On("UpdateFairByID", mock.Anything, mock.Anything).Return(nil)
+				service.On("SaveFair", mock.Anything).Return(nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 400, result.Code)
-				service.AssertNumberOfCalls(t, "UpdateFairByID", 0)
+				service.AssertNumberOfCalls(t, "SaveFair", 0)
 			},
 		},
 		{
-			name:          "Should not be able to convert the path parameter and return status code 400",
-			pathParameter: "A",
+			name: "Should execute the SaveFair Function, however receive an internal_server_error with status code 500",
 			body: `{
 						"longitude": -46550164,
 						"latitude": -23558733,
@@ -109,42 +105,11 @@ func TestUpdateFair(t *testing.T) {
 				}`,
 			warmUP: func() {
 				service = new(serviceMock)
-				service.On("UpdateFairByID", mock.Anything, mock.Anything).Return(nil)
-			},
-			expected: func(result *httptest.ResponseRecorder) {
-				assert.Equal(t, 400, result.Code)
-				service.AssertNumberOfCalls(t, "UpdateFairByID", 0)
-			},
-		},
-		{
-			name:          "Should execute the SaveFair Function, however receive an internal_server_error with status code 500",
-			pathParameter: "1",
-			body: `{
-						"longitude": -46550164,
-						"latitude": -23558733,
-						"latitude": -23558733,
-						"setor_censitario": 355030885000091,
-						"area_ponderacao": 3550308005040,
-						"codigo_ibge": "87",
-						"distrito": "VILA FORMOSA",
-						"codigo_subprefeitura": 26,
-						"subprefeitura": "ARICANDUVA-FORMOSA-CARRAO",
-						"regiao5": "Leste",
-						"regiao8": "Leste 1",
-						"nome_feira": "VILA FORMOSA",
-						"registro": "4041-0",
-						"logradouro": "RUA MARAGOJIPE",
-						"numero": "S/N",
-						"bairro": "VL FORMOSA",
-						"referencia": "TV RUA PRETORIA"
-				}`,
-			warmUP: func() {
-				service = new(serviceMock)
-				service.On("UpdateFairByID", mock.Anything, mock.Anything).Return(fmt.Errorf("internal_server_error"))
+				service.On("SaveFair", mock.Anything).Return(fmt.Errorf("internal_server_error"))
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 500, result.Code)
-				service.AssertNumberOfCalls(t, "UpdateFairByID", 1)
+				service.AssertNumberOfCalls(t, "SaveFair", 1)
 			},
 		},
 	}
@@ -153,10 +118,11 @@ func TestUpdateFair(t *testing.T) {
 			tt.warmUP()
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
-			handler := handlers.NewHandler(service)
-			put.NewUpdateHandler(handler, router)
+			routerGroupV1 := router.Group("/v1")
+			handler := v1.NewHandler(service, routerGroupV1)
+			post.NewFairHandler(handler)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("PUT", fmt.Sprintf("/feiras/%v", tt.pathParameter), bytes.NewBufferString(tt.body))
+			req, _ := http.NewRequest("POST", "/v1/feiras", bytes.NewBufferString(tt.body))
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})
@@ -168,7 +134,7 @@ type serviceMock struct {
 	service.FairService
 }
 
-func (sm *serviceMock) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error {
-	args := sm.Called(fairID, fairToBeUpdated)
+func (sm *serviceMock) SaveFair(newFair dto.Fair) error {
+	args := sm.Called(newFair)
 	return args.Error(0)
 }

@@ -1,10 +1,11 @@
-package get
+package delete
 
 import (
 	"net/http"
 	"strings"
 
-	"github.com/jeffersonto/feira-api/internal/handlers"
+	v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
 	"github.com/jeffersonto/feira-api/pkg/commons"
 
 	"github.com/gin-gonic/gin"
@@ -16,17 +17,17 @@ const (
 )
 
 type fairByIDHandler struct {
-	handlers.Handler
+	v1.Handler
 }
 
-func NewFairByIDyHandler(handler handlers.Handler, r *gin.Engine) {
+func NewFairByIDyHandler(handler v1.Handler) {
 	handle := fairByIDHandler{Handler: handler}
-	r.GET(urlByID, handle.FairByID())
+	handle.RouterGroup.DELETE(urlByID, handle.FairByID())
 }
 
 func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		logrus.Tracef("Get FairByID Initializing")
+		logrus.Tracef("Delete FairByID Initializing")
 
 		fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
 		if err != nil {
@@ -34,13 +35,13 @@ func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
 			return
 		}
 
-		feira, err := handler.Service.FindFairByID(fairID)
+		err = handler.Service.DeleteFairByID(fairID)
 		if err != nil {
 			_ = c.Error(err)
 			return
 		}
 
-		logrus.Tracef("Get FairByID Finished")
-		c.JSON(http.StatusOK, feira)
+		logrus.Tracef("Delete FairByID Finished")
+		c.Status(http.StatusNoContent)
 	}
 }

@@ -284,10 +284,46 @@ func TestUpdateFairByID(t *testing.T) {
 			warmUP: func(ID int64, fairEntity entity.Fair) {
 				repository = new(repositoryMock)
 				repository.On("Update", ID, fairEntity).Return(nil)
+				repository.On("AlreadyAnID", ID).Return(true, nil)
 			},
 			expected: func(err error) {
 				assert.Nil(t, err)
 				repository.AssertNumberOfCalls(t, "Update", 1)
+				repository.AssertNumberOfCalls(t, "AlreadyAnID", 1)
+			},
+		},
+		{
+			name: "Should not find record to update and return status 204",
+			input: input{
+				ID:   1,
+				fair: fairInput,
+			},
+			fairEntity: fairEntity,
+			warmUP: func(ID int64, fairEntity entity.Fair) {
+				repository = new(repositoryMock)
+				repository.On("AlreadyAnID", ID).Return(false, nil)
+			},
+			expected: func(err error) {
+				assert.NotNil(t, err)
+				repository.AssertNumberOfCalls(t, "Update", 0)
+				repository.AssertNumberOfCalls(t, "AlreadyAnID", 1)
+			},
+		},
+		{
+			name: "Should return a generic error because the search function returned an error",
+			input: input{
+				ID:   1,
+				fair: fairInput,
+			},
+			fairEntity: fairEntity,
+			warmUP: func(ID int64, fairEntity entity.Fair) {
+				repository = new(repositoryMock)
+				repository.On("AlreadyAnID", ID).Return(false, errors.New("internal_server_error"))
+			},
+			expected: func(err error) {
+				assert.NotNil(t, err)
+				repository.AssertNumberOfCalls(t, "Update", 0)
+				repository.AssertNumberOfCalls(t, "AlreadyAnID", 1)
 			},
 		},
 		{
@@ -300,11 +336,13 @@ func TestUpdateFairByID(t *testing.T) {
 			warmUP: func(ID int64, fairEntity entity.Fair) {
 				repository = new(repositoryMock)
 				repository.On("Update", ID, fairEntity).Return(errors.New("internal_server_error"))
+				repository.On("AlreadyAnID", ID).Return(true, nil)
 			},
 			expected: func(err error) {
 				assert.NotNil(t, err)
 				assert.Error(t, err)
 				repository.AssertNumberOfCalls(t, "Update", 1)
+				repository.AssertNumberOfCalls(t, "AlreadyAnID", 1)
 			},
 		},
 	}
@@ -342,4 +380,10 @@ func (sm *repositoryMock) Save(fair entity.Fair) error {
 func (sm *repositoryMock) Update(id int64, fair entity.Fair) error {
 	args := sm.Called(id, fair)
 	return args.Error(0)
+}
+
+func (sm *repositoryMock) AlreadyAnID(userID int64) (bool, error) {
+	args := sm.Called(userID)
+	result, _ := args.Get(0).(bool)
+	return result, args.Error(1)
 }

@@ -455,6 +455,72 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
+func TestAlreadyAnID(t *testing.T) {
+	sqlClient, mock := NewMock()
+	query := "SELECT id " +
+		" FROM feiras_livres " +
+		" WHERE id = ?"
+
+	tests := []struct {
+		name     string
+		input    int64
+		warmUP   func(id int64)
+		expected func(result bool, err error)
+	}{
+		{
+			name:  "Should return error generic executing query",
+			input: 1,
+			warmUP: func(id int64) {
+				mock.ExpectQuery(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnError(errors.New("error finding results"))
+			},
+			expected: func(result bool, err error) {
+				assert.Equal(t, false, result)
+				assert.NotNil(t, err)
+				assert.Error(t, err)
+				assert.Equal(t, "error finding results", err.Error())
+			},
+		},
+		{
+			name:  "Should return false because it found no records",
+			input: 999,
+			warmUP: func(id int64) {
+				mock.ExpectQuery(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnError(sql.ErrNoRows)
+			},
+			expected: func(result bool, err error) {
+				assert.Equal(t, false, result)
+				assert.Nil(t, err)
+			},
+		},
+		{
+			name:  "Should return record correctly and return true",
+			input: 10,
+			warmUP: func(id int64) {
+				mock.ExpectQuery(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnRows(
+						sqlmock.NewRows([]string{"id"}).
+							AddRow(1234))
+			},
+			expected: func(result bool, err error) {
+				assert.Equal(t, true, result)
+				assert.Nil(t, err)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.warmUP(tt.input)
+			result, err := sqlClient.AlreadyAnID(tt.input)
+			tt.expected(result, err)
+		})
+	}
+}
+
 func NewMock() (*fair.Repository, sqlmock.Sqlmock) {
 	db, mock, err := sqlmock.New()
 	if err != nil {

@@ -16,7 +16,7 @@
   - [Testes](#testes)
   - [Principais End-Points e Retornos](#principais-end-points-e-retornos)
 - [Collection Postman](#collection-postman)
-- [Outras Melhorias](#outras-melhorias)
+- [Débitos Técnicos](#debitos-tecnicos)
 - [Licença](#licença)
 - [Autor](#autor)
 
@@ -84,31 +84,31 @@ go tool cover -html cover.out -o cover.html
 ```
 curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
-> > 200 - Ok
+> > 200 - Ok: busca realizada com registros
 >
-> > 204 - No Content
+> > 204 - No Content: busca realizada sem registros
 >
-> > 500 - Internal Server Error
+> > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
 - Busca feiras Por Query Params
 ```
 curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 ```
-> > 200 - Ok
+> > 200 - Ok: busca realizada com registros
 >
-> > 204 - No Content
+> > 204 - No Content: busca realizada sem registros
 >
-> > 500 - Internal Server Error
+> > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
 - Busca todas as feiras
 ```
 curl --location --request GET 'http://localhost:8080/feiras''
 ```
-> > 200 - Ok
+> > 200 - Ok: busca realizada com registros
 >
-> > 204 - No Content
+> > 204 - No Content: busca realizada sem registros
 >
-> > 500 - Internal Server Error
+> > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
 - Cria uma Nova Feira
 ```
@@ -133,11 +133,11 @@ curl --location --request POST 'http://localhost:8080/feiras' \
     "referencia": "TV RUA PRETORIA"
 }'
 ```
-> > 201 - Created
+> > 201 - Created: novo registro criado com sucesso
 >
-> > 400 - Bad Request
+> > 400 - Bad Request: body passado incorretamente
 >
-> > 500 - Internal Server Error
+> > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
 - Atualiza uma Feira
 ```
@@ -164,19 +164,19 @@ curl --location --request PUT 'http://localhost:8080/feiras/1' \
 ```
 > > 200 - Ok
 >
-> > 204 - No Content
+> > 204 - No Content: não foi encontrado registro para atualizar
 >
-> > 400 - Bad Request
+> > 400 - Bad Request: body ou path parameter passado incorretamente
 >
-> > 500 - Internal Server Error
+> > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
 - Deleta uma Feira por ID
 ```
 curl --location --request DELETE 'http://localhost:8080/feiras/1'
 ```
-> > 204 - No Content
+> > 204 - No Content: deleção executada corretamente ou não houve afetação por ausência do dado
 >
-> > 500 - Internal Server Error
+> > 500 - Internal Server Error: erro desconhecido na busca dos dado
 
 ## Collection Postman
 
@@ -184,7 +184,7 @@ No link abaixo será possível fazer o download da collection do Postman para fa
 
 [Feita-Api Collection Postman](resources/collection/Feira-API.postman_collection.json)
 
-## Outras Melhorias
+## Débitos Técnicos
 
 - [ ] Implementação de cache
 

@@ -3,14 +3,15 @@ package server
 import (
 	"net/http"
 
+	v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+	delete2 "github.com/jeffersonto/feira-api/internal/handlers/v1/delete"
+	get2 "github.com/jeffersonto/feira-api/internal/handlers/v1/get"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/post"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/put"
+
 	"github.com/jeffersonto/feira-api/cmd/server/middleware"
 	"github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair"
 	config "github.com/jeffersonto/feira-api/internal/config/db"
-	"github.com/jeffersonto/feira-api/internal/handlers"
-	"github.com/jeffersonto/feira-api/internal/handlers/delete"
-	"github.com/jeffersonto/feira-api/internal/handlers/get"
-	"github.com/jeffersonto/feira-api/internal/handlers/post"
-	"github.com/jeffersonto/feira-api/internal/handlers/put"
 	"github.com/jeffersonto/feira-api/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,6 @@ func Run(port string) error {
 	defer fairRepositoryConnection.DB.Close()
 
 	service := service.NewFairService(fairRepositoryConnection)
-	handler := handlers.NewHandler(service)
 
 	health := HealthChecker{}
 
@@ -44,11 +44,15 @@ func Run(port string) error {
 	router.Use(middleware.ErrorHandle())
 	router.GET("/ping", health.PingHandler)
 
-	get.NewFairByQueryHandler(handler, router)
-	get.NewFairByIDyHandler(handler, router)
-	delete.NewFairByIDyHandler(handler, router)
-	post.NewFairHandler(handler, router)
-	put.NewUpdateHandler(handler, router)
+	routerGroupV1 := router.Group("/v1")
+
+	handler := v1.NewHandler(service, routerGroupV1)
+
+	get2.NewFairByQueryHandler(handler)
+	get2.NewFairByIDyHandler(handler)
+	delete2.NewFairByIDyHandler(handler)
+	post.NewFairHandler(handler)
+	put.NewUpdateHandler(handler)
 
 	return router.Run(":" + port)
 }

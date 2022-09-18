@@ -1,11 +1,12 @@
-package delete_test
+package get_test
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jeffersonto/feira-api/cmd/server/middleware"
-	"github.com/jeffersonto/feira-api/internal/handlers"
-	"github.com/jeffersonto/feira-api/internal/handlers/delete"
+	"github.com/jeffersonto/feira-api/internal/entity"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/get"
 	"github.com/jeffersonto/feira-api/internal/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -26,16 +27,16 @@ func TestFairByID(t *testing.T) {
 		expected       func(result *httptest.ResponseRecorder)
 	}{
 		{
-			name:           "Should successfully delete and return status code 204",
+			name:           "Should successfully get by id and return status code 200",
 			pathParameter:  "1",
 			expectedFairID: 1,
 			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
-				service.On("DeleteFairByID", expectedFairID).Return(nil)
+				service.On("FindFairByID", mock.Anything).Return(entity.Fair{ID: 1, NomeFeira: "Feira Teste"}, nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
-				assert.Equal(t, 204, result.Code)
-				service.AssertNumberOfCalls(t, "DeleteFairByID", 1)
+				assert.Equal(t, 200, result.Code)
+				service.AssertNumberOfCalls(t, "FindFairByID", 1)
 			},
 		},
 		{
@@ -44,24 +45,24 @@ func TestFairByID(t *testing.T) {
 			expectedFairID: 0,
 			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
-				service.On("DeleteFairByID", expectedFairID).Return(nil)
+				service.On("FindFairByID", mock.Anything).Return(entity.Fair{}, nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 400, result.Code)
-				service.AssertNumberOfCalls(t, "DeleteFairByID", 0)
+				service.AssertNumberOfCalls(t, "FindFairByID", 0)
 			},
 		},
 		{
-			name:           "Should execute the DeleteFairByID Function, however receive an internal_server_error with status code 500",
+			name:           "Should execute the FindFairByID Function, however receive an internal_server_error with status code 500",
 			pathParameter:  "1",
 			expectedFairID: 1,
 			warmUP: func(expectedFairID int64) {
 				service = new(serviceMock)
-				service.On("DeleteFairByID", expectedFairID).Return(fmt.Errorf("internal_server_error"))
+				service.On("FindFairByID", mock.Anything).Return(entity.Fair{}, fmt.Errorf("internal_server_error"))
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 500, result.Code)
-				service.AssertNumberOfCalls(t, "DeleteFairByID", 1)
+				service.AssertNumberOfCalls(t, "FindFairByID", 1)
 			},
 		},
 	}
@@ -70,10 +71,11 @@ func TestFairByID(t *testing.T) {
 			tt.warmUP(tt.expectedFairID)
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
-			handler := handlers.NewHandler(service)
-			delete.NewFairByIDyHandler(handler, router)
+			routerGroupV1 := router.Group("/v1")
+			handler := v1.NewHandler(service, routerGroupV1)
+			get.NewFairByIDyHandler(handler)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("DELETE", fmt.Sprintf("/feiras/%v", tt.pathParameter), nil)
+			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/feiras/%v", tt.pathParameter), nil)
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})
@@ -85,7 +87,8 @@ type serviceMock struct {
 	service.FairService
 }
 
-func (sm *serviceMock) DeleteFairByID(id int64) error {
+func (sm *serviceMock) FindFairByID(id int64) (entity.Fair, error) {
 	args := sm.Called(id)
-	return args.Error(0)
+	result, _ := args.Get(0).(entity.Fair)
+	return result, args.Error(1)
 }

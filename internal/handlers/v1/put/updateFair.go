@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
 	"github.com/jeffersonto/feira-api/internal/dto"
 	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
-	"github.com/jeffersonto/feira-api/internal/handlers"
 	"github.com/jeffersonto/feira-api/pkg/commons"
 
 	"github.com/gin-gonic/gin"
@@ -19,12 +20,12 @@ const (
 )
 
 type updateFairHandler struct {
-	handlers.Handler
+	v1.Handler
 }
 
-func NewUpdateHandler(handler handlers.Handler, r *gin.Engine) {
+func NewUpdateHandler(handler v1.Handler) {
 	handle := updateFairHandler{Handler: handler}
-	r.PUT(urlUpdateFair, handle.UpdateFair())
+	handle.RouterGroup.PUT(urlUpdateFair, handle.UpdateFair())
 }
 
 func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {

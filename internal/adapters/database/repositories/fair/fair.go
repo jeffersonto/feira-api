@@ -16,6 +16,7 @@ type FairRepository interface {
 	Save(fair entity.Fair) error
 	Update(id int64, fair entity.Fair) error
 	GetByQueryID(filters entity.Filter) ([]entity.Fair, error)
+	AlreadyAnID(userID int64) (bool, error)
 }
 
 type Repository struct {
@@ -170,4 +171,19 @@ func (repo *Repository) Update(id int64, fair entity.Fair) error {
 	}
 
 	return nil
+}
+
+func (repo *Repository) AlreadyAnID(userID int64) (bool, error) {
+	var idFetched int64
+	err := repo.DB.QueryRow("SELECT id "+
+		" FROM feiras_livres "+
+		" WHERE id = ?", userID).Scan(&idFetched)
+	switch {
+	case err == sql.ErrNoRows:
+		return false, nil
+	case err != nil:
+		return false, err
+	default:
+		return true, nil
+	}
 }

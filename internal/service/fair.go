@@ -49,5 +49,14 @@ func (service *Fair) SaveFair(newFair dto.Fair) error {
 }
 
 func (service *Fair) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error {
+	alreadyAnID, err := service.repository.AlreadyAnID(fairID)
+	if err != nil {
+		return err
+	}
+
+	if !alreadyAnID {
+		return exceptions.NewNoContent()
+	}
+
 	return service.repository.Update(fairID, fairToBeUpdated.ToEntity())
 }

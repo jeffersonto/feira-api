@@ -28,7 +28,7 @@ func TestUpdateFair(t *testing.T) {
 		expected      func(result *httptest.ResponseRecorder)
 	}{
 		{
-			name:          "Should successfully get and return status code 204",
+			name:          "Should successfully get and return status code 200",
 			pathParameter: "1",
 			body: `{
 						"longitude": -46550164,
@@ -53,7 +53,7 @@ func TestUpdateFair(t *testing.T) {
 				service.On("UpdateFairByID", mock.Anything, mock.Anything).Return(nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
-				assert.Equal(t, 204, result.Code)
+				assert.Equal(t, 200, result.Code)
 				service.AssertNumberOfCalls(t, "UpdateFairByID", 1)
 			},
 		},

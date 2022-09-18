@@ -53,6 +53,6 @@ func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {
 		}
 
 		logrus.Tracef("Put UpdateFair Finished")
-		c.Status(http.StatusNoContent)
+		c.Status(http.StatusOK)
 	}
 }

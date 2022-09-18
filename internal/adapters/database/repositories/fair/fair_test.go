@@ -99,6 +99,16 @@ func TestGetByQueryID(t *testing.T) {
 		" FROM feiras_livres " +
 		" WHERE 1=1 "
 
+	queryWithFilters := "SELECT id, longitude, latitude, setor_censitario, area_ponderacao," +
+		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5," +
+		" regiao8, nome_feira, registro, logradouro, numero, bairro, referencia " +
+		" FROM feiras_livres " +
+		" WHERE 1=1 " +
+		" AND UPPER(TRIM(distrito)) = UPPER(TRIM(?))" +
+		" AND UPPER(TRIM(regiao5)) = UPPER(TRIM(?))" +
+		" AND UPPER(TRIM(nome_feira)) = UPPER(TRIM(?))" +
+		" AND UPPER(TRIM(bairro)) = UPPER(TRIM(?))"
+
 	tests := []struct {
 		name     string
 		input    entity.Filter
@@ -189,7 +199,7 @@ func TestGetByQueryID(t *testing.T) {
 				Bairro:    "JD BOA ESPERANCA",
 			},
 			warmUP: func(filters entity.Filter) {
-				mock.ExpectQuery(regexp.QuoteMeta(queryAllRows)).
+				mock.ExpectQuery(regexp.QuoteMeta(queryWithFilters)).
 					WillReturnRows(
 						sqlmock.NewRows([]string{"id", "longitude", "latitude", "setor_censitario", "area_ponderacao",
 							"codigo_ibge", "distrito", "codigo_subprefeitura", "subprefeitura", "regiao5", "regiao8",

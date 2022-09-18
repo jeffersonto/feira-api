@@ -101,6 +101,15 @@ curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
 curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 ```
+
+
+Parameters | Type
+------------- | -------------
+distrito | string
+regiao5 | string
+nomeFeira | string
+bairro | string
+
 > > 200 - Ok: busca realizada com registros
 >
 > > 204 - No Content: busca realizada sem registros
@@ -194,6 +203,7 @@ No link abaixo será possível fazer o download da collection do Postman para fa
 ## Débitos Técnicos
 
 - [ ] Implementação de cache
+- [ ] Atualização de feiras por Patch
 
 ## Licença
 

@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
-	delete2 "github.com/jeffersonto/feira-api/internal/handlers/v1/delete"
-	get2 "github.com/jeffersonto/feira-api/internal/handlers/v1/get"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/delete"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/get"
 	"github.com/jeffersonto/feira-api/internal/handlers/v1/post"
 	"github.com/jeffersonto/feira-api/internal/handlers/v1/put"
 
@@ -48,9 +48,9 @@ func Run(port string) error {
 
 	handler := v1.NewHandler(service, routerGroupV1)
 
-	get2.NewFairByQueryHandler(handler)
-	get2.NewFairByIDyHandler(handler)
-	delete2.NewFairByIDyHandler(handler)
+	get.NewFairByQueryHandler(handler)
+	get.NewFairByIDyHandler(handler)
+	delete.NewFairByIDyHandler(handler)
 	post.NewFairHandler(handler)
 	put.NewUpdateHandler(handler)
 

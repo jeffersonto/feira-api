@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair"
-	entity2 "github.com/jeffersonto/feira-api/internal/entity"
+	"github.com/jeffersonto/feira-api/internal/entity"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -15,7 +15,7 @@ import (
 
 func TestGetByID(t *testing.T) {
 	var (
-		resultsExpected = entity2.Fair{
+		resultsExpected = entity.Fair{
 			ID:        1234,
 			Longitude: -46450426,
 			Latitude:  -23602582,
@@ -26,14 +26,14 @@ func TestGetByID(t *testing.T) {
 	query := "SELECT id, longitude, latitude, setor_censitario, area_ponderacao," +
 		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira," +
 		" registro, logradouro, numero, bairro, referencia " +
-		" FROM fairs " +
+		" FROM feiras_livres " +
 		" WHERE id = ? "
 
 	tests := []struct {
 		name     string
 		input    int64
 		warmUP   func(id int64)
-		expected func(result entity2.Fair, err error)
+		expected func(result entity.Fair, err error)
 	}{
 		{
 			name:  "Should return error generic executing query",
@@ -43,8 +43,8 @@ func TestGetByID(t *testing.T) {
 					WithArgs(id).
 					WillReturnError(errors.New("error finding results"))
 			},
-			expected: func(result entity2.Fair, err error) {
-				assert.Equal(t, entity2.Fair{}, result)
+			expected: func(result entity.Fair, err error) {
+				assert.Equal(t, entity.Fair{}, result)
 				assert.NotNil(t, err)
 				assert.Error(t, err)
 				assert.Equal(t, "error finding results", err.Error())
@@ -58,8 +58,8 @@ func TestGetByID(t *testing.T) {
 					WithArgs(id).
 					WillReturnError(sql.ErrNoRows)
 			},
-			expected: func(result entity2.Fair, err error) {
-				assert.Equal(t, entity2.Fair{}, result)
+			expected: func(result entity.Fair, err error) {
+				assert.Equal(t, entity.Fair{}, result)
 				assert.NotNil(t, err)
 				assert.Error(t, err)
 				assert.Equal(t, "not found", err.Error())
@@ -75,7 +75,7 @@ func TestGetByID(t *testing.T) {
 						sqlmock.NewRows([]string{"id", "longitude", "latitude", "nome_feira"}).
 							AddRow(1234, -46450426, -23602582, "Feira Teste"))
 			},
-			expected: func(result entity2.Fair, err error) {
+			expected: func(result entity.Fair, err error) {
 				assert.Equal(t, resultsExpected, result)
 				assert.Nil(t, err)
 			},
@@ -96,23 +96,33 @@ func TestGetByQueryID(t *testing.T) {
 	queryAllRows := "SELECT id, longitude, latitude, setor_censitario, area_ponderacao," +
 		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5," +
 		" regiao8, nome_feira, registro, logradouro, numero, bairro, referencia " +
-		" FROM fairs " +
+		" FROM feiras_livres " +
 		" WHERE 1=1 "
+
+	queryWithFilters := "SELECT id, longitude, latitude, setor_censitario, area_ponderacao," +
+		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5," +
+		" regiao8, nome_feira, registro, logradouro, numero, bairro, referencia " +
+		" FROM feiras_livres " +
+		" WHERE 1=1 " +
+		" AND UPPER(TRIM(distrito)) = UPPER(TRIM(?))" +
+		" AND UPPER(TRIM(regiao5)) = UPPER(TRIM(?))" +
+		" AND UPPER(TRIM(nome_feira)) = UPPER(TRIM(?))" +
+		" AND UPPER(TRIM(bairro)) = UPPER(TRIM(?))"
 
 	tests := []struct {
 		name     string
-		input    entity2.Filter
-		warmUP   func(filters entity2.Filter)
-		expected func(result []entity2.Fair, err error)
+		input    entity.Filter
+		warmUP   func(filters entity.Filter)
+		expected func(result []entity.Fair, err error)
 	}{
 		{
 			name:  "Should return error generic executing query",
-			input: entity2.Filter{},
-			warmUP: func(filters entity2.Filter) {
+			input: entity.Filter{},
+			warmUP: func(filters entity.Filter) {
 				mock.ExpectQuery(regexp.QuoteMeta(queryAllRows)).
 					WillReturnError(errors.New("error finding results"))
 			},
-			expected: func(result []entity2.Fair, err error) {
+			expected: func(result []entity.Fair, err error) {
 				assert.Len(t, result, 0)
 				assert.NotNil(t, err)
 				assert.Error(t, err)
@@ -121,8 +131,8 @@ func TestGetByQueryID(t *testing.T) {
 		},
 		{
 			name:  "Should return error converting row",
-			input: entity2.Filter{},
-			warmUP: func(filters entity2.Filter) {
+			input: entity.Filter{},
+			warmUP: func(filters entity.Filter) {
 				mock.ExpectQuery(regexp.QuoteMeta(queryAllRows)).
 					WillReturnRows(
 						sqlmock.NewRows([]string{"id", "longitude", "latitude", "setor_censitario", "area_ponderacao",
@@ -132,7 +142,7 @@ func TestGetByQueryID(t *testing.T) {
 								30, "SAO MATEUS", "Leste", "Leste 2", "JD.BOA ESPERANCA", "5171-3", "RUA IGUPIARA",
 								"S/N", "JD BOA ESPERANCA", ""))
 			},
-			expected: func(result []entity2.Fair, err error) {
+			expected: func(result []entity.Fair, err error) {
 				assert.Nil(t, result)
 				assert.Error(t, err)
 				assert.Len(t, result, 0)
@@ -142,8 +152,8 @@ func TestGetByQueryID(t *testing.T) {
 		},
 		{
 			name:  "Should return error converting row",
-			input: entity2.Filter{},
-			warmUP: func(filters entity2.Filter) {
+			input: entity.Filter{},
+			warmUP: func(filters entity.Filter) {
 				mock.ExpectQuery(regexp.QuoteMeta(queryAllRows)).
 					WillReturnRows(
 						sqlmock.NewRows([]string{"id", "longitude", "latitude", "setor_censitario", "area_ponderacao",
@@ -154,7 +164,7 @@ func TestGetByQueryID(t *testing.T) {
 								"S/N", "JD BOA ESPERANCA", "").
 							RowError(0, errors.New("generic error after scan")))
 			},
-			expected: func(result []entity2.Fair, err error) {
+			expected: func(result []entity.Fair, err error) {
 				assert.Nil(t, result)
 				assert.Error(t, err)
 				assert.Len(t, result, 0)
@@ -163,8 +173,8 @@ func TestGetByQueryID(t *testing.T) {
 		},
 		{
 			name:  "Should return rows correctly, without a filter",
-			input: entity2.Filter{},
-			warmUP: func(filters entity2.Filter) {
+			input: entity.Filter{},
+			warmUP: func(filters entity.Filter) {
 				mock.ExpectQuery(regexp.QuoteMeta(queryAllRows)).
 					WillReturnRows(
 						sqlmock.NewRows([]string{"id", "longitude", "latitude", "setor_censitario", "area_ponderacao",
@@ -174,7 +184,7 @@ func TestGetByQueryID(t *testing.T) {
 								30, "SAO MATEUS", "Leste", "Leste 2", "JD.BOA ESPERANCA", "5171-3", "RUA IGUPIARA",
 								"S/N", "JD BOA ESPERANCA", ""))
 			},
-			expected: func(result []entity2.Fair, err error) {
+			expected: func(result []entity.Fair, err error) {
 				assert.NotNil(t, result)
 				assert.Nil(t, err)
 				assert.Len(t, result, 1)
@@ -182,14 +192,14 @@ func TestGetByQueryID(t *testing.T) {
 		},
 		{
 			name: "Should return rows correctly, with filters",
-			input: entity2.Filter{
+			input: entity.Filter{
 				Distrito:  "IGUATEMI",
 				Regiao5:   "Leste",
 				NomeFeira: "JD.BOA ESPERANCA",
 				Bairro:    "JD BOA ESPERANCA",
 			},
-			warmUP: func(filters entity2.Filter) {
-				mock.ExpectQuery(regexp.QuoteMeta(queryAllRows)).
+			warmUP: func(filters entity.Filter) {
+				mock.ExpectQuery(regexp.QuoteMeta(queryWithFilters)).
 					WillReturnRows(
 						sqlmock.NewRows([]string{"id", "longitude", "latitude", "setor_censitario", "area_ponderacao",
 							"codigo_ibge", "distrito", "codigo_subprefeitura", "subprefeitura", "regiao5", "regiao8",
@@ -198,7 +208,7 @@ func TestGetByQueryID(t *testing.T) {
 								30, "SAO MATEUS", "Leste", "Leste 2", "JD.BOA ESPERANCA", "5171-3", "RUA IGUPIARA",
 								"S/N", "JD BOA ESPERANCA", ""))
 			},
-			expected: func(result []entity2.Fair, err error) {
+			expected: func(result []entity.Fair, err error) {
 				assert.NotNil(t, result)
 				assert.Nil(t, err)
 				assert.Len(t, result, 1)
@@ -218,7 +228,7 @@ func TestGetByQueryID(t *testing.T) {
 func TestDeleteByID(t *testing.T) {
 
 	sqlClient, mock := NewMock()
-	query := "DELETE FROM fairs" +
+	query := "DELETE FROM feiras_livres" +
 		" WHERE id = ? "
 
 	tests := []struct {
@@ -266,7 +276,7 @@ func TestDeleteByID(t *testing.T) {
 
 func TestSave(t *testing.T) {
 	var (
-		fairInput = entity2.Fair{
+		fairInput = entity.Fair{
 			ID:                  880,
 			Longitude:           -46450426,
 			Latitude:            -23602582,
@@ -288,21 +298,21 @@ func TestSave(t *testing.T) {
 	)
 
 	sqlClient, mock := NewMock()
-	query := "INSERT INTO fairs (longitude, latitude, setor_censitario, area_ponderacao," +
+	query := "INSERT INTO feiras_livres (longitude, latitude, setor_censitario, area_ponderacao," +
 		" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira," +
 		"registro, logradouro, numero, bairro, referencia) " +
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	tests := []struct {
 		name     string
-		input    entity2.Fair
-		warmUP   func(fair entity2.Fair)
+		input    entity.Fair
+		warmUP   func(fair entity.Fair)
 		expected func(err error)
 	}{
 		{
 			name:  "Should return a generic error when trying to insert",
 			input: fairInput,
-			warmUP: func(fair entity2.Fair) {
+			warmUP: func(fair entity.Fair) {
 				mock.ExpectExec(regexp.QuoteMeta(query)).
 					WithArgs(fair.Longitude, fair.Latitude, fair.SetorCensitario, fair.AreaPonderacao,
 						fair.CodigoIBGE, fair.Distrito, fair.CodigoSubPrefeitura, fair.SubPrefeitura,
@@ -319,7 +329,7 @@ func TestSave(t *testing.T) {
 		{
 			name:  "Should save correctly",
 			input: fairInput,
-			warmUP: func(fair entity2.Fair) {
+			warmUP: func(fair entity.Fair) {
 				mock.ExpectExec(regexp.QuoteMeta(query)).
 					WithArgs(fair.Longitude, fair.Latitude, fair.SetorCensitario, fair.AreaPonderacao,
 						fair.CodigoIBGE, fair.Distrito, fair.CodigoSubPrefeitura, fair.SubPrefeitura,
@@ -344,7 +354,7 @@ func TestSave(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	var (
-		fairInput = entity2.Fair{
+		fairInput = entity.Fair{
 			ID:                  880,
 			Longitude:           -46450426,
 			Latitude:            -23602582,
@@ -367,11 +377,11 @@ func TestUpdate(t *testing.T) {
 
 	type input struct {
 		fairID int64
-		fair   entity2.Fair
+		fair   entity.Fair
 	}
 
 	sqlClient, mock := NewMock()
-	query := "UPDATE fairs SET" +
+	query := "UPDATE feiras_livres SET" +
 		" longitude = ?," +
 		" latitude = ?," +
 		" setor_censitario = ?," +
@@ -441,6 +451,72 @@ func TestUpdate(t *testing.T) {
 			tt.warmUP(tt.input)
 			err := sqlClient.Update(tt.input.fairID, tt.input.fair)
 			tt.expected(err)
+		})
+	}
+}
+
+func TestAlreadyAnID(t *testing.T) {
+	sqlClient, mock := NewMock()
+	query := "SELECT id " +
+		" FROM feiras_livres " +
+		" WHERE id = ?"
+
+	tests := []struct {
+		name     string
+		input    int64
+		warmUP   func(id int64)
+		expected func(result bool, err error)
+	}{
+		{
+			name:  "Should return error generic executing query",
+			input: 1,
+			warmUP: func(id int64) {
+				mock.ExpectQuery(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnError(errors.New("error finding results"))
+			},
+			expected: func(result bool, err error) {
+				assert.Equal(t, false, result)
+				assert.NotNil(t, err)
+				assert.Error(t, err)
+				assert.Equal(t, "error finding results", err.Error())
+			},
+		},
+		{
+			name:  "Should return false because it found no records",
+			input: 999,
+			warmUP: func(id int64) {
+				mock.ExpectQuery(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnError(sql.ErrNoRows)
+			},
+			expected: func(result bool, err error) {
+				assert.Equal(t, false, result)
+				assert.Nil(t, err)
+			},
+		},
+		{
+			name:  "Should return record correctly and return true",
+			input: 10,
+			warmUP: func(id int64) {
+				mock.ExpectQuery(regexp.QuoteMeta(query)).
+					WithArgs(id).
+					WillReturnRows(
+						sqlmock.NewRows([]string{"id"}).
+							AddRow(1234))
+			},
+			expected: func(result bool, err error) {
+				assert.Equal(t, true, result)
+				assert.Nil(t, err)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.warmUP(tt.input)
+			result, err := sqlClient.AlreadyAnID(tt.input)
+			tt.expected(result, err)
 		})
 	}
 }

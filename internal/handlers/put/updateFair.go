@@ -1,12 +1,13 @@
 package put
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/jeffersonto/feira-api/internal/dto"
 	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 	"github.com/jeffersonto/feira-api/internal/handlers"
 	"github.com/jeffersonto/feira-api/pkg/commons"
-	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -52,6 +53,6 @@ func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {
 		}
 
 		logrus.Tracef("Put UpdateFair Finished")
-		c.Status(http.StatusNoContent)
+		c.Status(http.StatusOK)
 	}
 }

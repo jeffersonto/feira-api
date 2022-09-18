@@ -1,10 +1,11 @@
 package get
 
 import (
+	"net/http"
+
 	"github.com/jeffersonto/feira-api/internal/dto"
 	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 	"github.com/jeffersonto/feira-api/internal/handlers"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

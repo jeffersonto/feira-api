@@ -3,8 +3,9 @@ package commons
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 	"strconv"
+
+	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 )
 
 const (

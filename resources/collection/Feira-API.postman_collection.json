@@ -30,13 +30,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/feiras/1",
+					"raw": "http://localhost:8080/v1/feiras/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"v1",
 						"feiras",
 						"1"
 					]
@@ -50,13 +51,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/feiras?bairro=VL FORMOSA",
+					"raw": "http://localhost:8080/v1/feiras?bairro=VL FORMOSA",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"v1",
 						"feiras"
 					],
 					"query": [
@@ -75,13 +77,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/feiras",
+					"raw": "http://localhost:8080/v1/feiras",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"v1",
 						"feiras"
 					]
 				}
@@ -103,13 +106,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/feiras",
+					"raw": "http://localhost:8080/v1/feiras",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"v1",
 						"feiras"
 					]
 				}
@@ -131,13 +135,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/feiras/1",
+					"raw": "http://localhost:8080/v1/feiras/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"v1",
 						"feiras",
 						"1"
 					]
@@ -151,13 +156,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/feiras/1",
+					"raw": "http://localhost:8080/v1/feiras/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"v1",
 						"feiras",
 						"1"
 					]

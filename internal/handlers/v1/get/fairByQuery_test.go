@@ -6,8 +6,8 @@ import (
 	"github.com/jeffersonto/feira-api/cmd/server/middleware"
 	"github.com/jeffersonto/feira-api/internal/dto"
 	"github.com/jeffersonto/feira-api/internal/entity"
-	"github.com/jeffersonto/feira-api/internal/handlers"
-	"github.com/jeffersonto/feira-api/internal/handlers/get"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1"
+	"github.com/jeffersonto/feira-api/internal/handlers/v1/get"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"net/http"
@@ -55,10 +55,11 @@ func TestFairByQuery(t *testing.T) {
 			tt.warmUP()
 			router := gin.Default()
 			router.Use(middleware.ErrorHandle())
-			handler := handlers.NewHandler(service)
-			get.NewFairByQueryHandler(handler, router)
+			routerGroupV1 := router.Group("/v1")
+			handler := v1.NewHandler(service, routerGroupV1)
+			get.NewFairByQueryHandler(handler)
 			response := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/feiras%v", tt.queryParameter), nil)
+			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/feiras%v", tt.queryParameter), nil)
 			router.ServeHTTP(response, req)
 			tt.expected(response)
 		})

@@ -3,11 +3,11 @@ package get
 import (
 	"net/http"
 
-	"github.com/jeffersonto/feira-api/internal/dto"
-	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
-	"github.com/jeffersonto/feira-api/internal/handlers"
+	v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jeffersonto/feira-api/internal/dto"
+	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 	"github.com/sirupsen/logrus"
 )
 
@@ -16,12 +16,12 @@ const (
 )
 
 type fairByQueryHandler struct {
-	handlers.Handler
+	v1.Handler
 }
 
-func NewFairByQueryHandler(handler handlers.Handler, r *gin.Engine) {
+func NewFairByQueryHandler(handler v1.Handler) {
 	handle := fairByQueryHandler{Handler: handler}
-	r.GET(URLByQuery, handle.FairByQuery())
+	handle.RouterGroup.GET(URLByQuery, handle.FairByQuery())
 }
 
 func (handler *fairByQueryHandler) FairByQuery() gin.HandlerFunc {

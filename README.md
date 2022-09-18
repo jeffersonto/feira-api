@@ -32,6 +32,8 @@ Este projeto visa carregar informações das feiras públicas disponibilizadas n
 
 [3. Layout de Estrutura de Pasta e Arquitetura de Software](docs/adr/0003-layout-de-estrutura-de-pasta-e-arquitetura-de-software.md)
 
+[4. Testes focados no core da aplicação e percentual de cobertura de testes](docs/adr/004-testes-focados-no-core-da-aplicacao-e-percentual-de-cobertura-de-testes.md)
+
 
 ## Requisitos
 - [Git](https://git-scm.com/downloads)

@@ -30,6 +30,12 @@ Este projeto visa carregar informações das feiras públicas disponibilizadas n
 
 [2. Banco de Dados em Memória (SQL Lite) para Gerenciamento de Feiras](docs/adr/0002-banco-de-dados-em-memoria-para-gerenciamento-de-feiras.md)
 
+[3. Layout de Estrutura de Pasta e Arquitetura de Software](docs/adr/0003-layout-de-estrutura-de-pasta-e-arquitetura-de-software.md)
+
+[4. Testes focados no core da aplicação e percentual de cobertura de testes](docs/adr/004-testes-focados-no-core-da-aplicacao-e-percentual-de-cobertura-de-testes.md)
+
+[5. Desnormalização da tabela de feiras livres](docs/adr/005-desnormalizacao-tabela-feiras-livres.md)
+
 ## Requisitos
 - [Git](https://git-scm.com/downloads)
 - [Golang 1.17 ou superior](https://go.dev/doc/install)
@@ -56,6 +62,8 @@ go run github.com/jeffersonto/feira-api/cmd
 
 Ou abrir o projeto em sua IDE preferida e executá-lo através de atalhos disponíveis.
 
+O arquivo de feira será importado automaticamente a cada execução da aplicação, não sendo necessário quaisquer passos adicionais.
+
 ### Testes
 
 Para execução dos testes com cobertura, na pasta raiz do projeto, seguir os passos:
@@ -76,7 +84,7 @@ go tool cover -html cover.out -o cover.html
 ```
 curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
-> > 200 - Created
+> > 200 - Ok
 >
 > > 204 - No Content
 >
@@ -86,7 +94,17 @@ curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
 curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 ```
-> > 200 - Created
+> > 200 - Ok
+>
+> > 204 - No Content
+>
+> > 500 - Internal Server Error
+
+- Busca todas as feiras
+```
+curl --location --request GET 'http://localhost:8080/feiras''
+```
+> > 200 - Ok
 >
 > > 204 - No Content
 >
@@ -117,6 +135,8 @@ curl --location --request POST 'http://localhost:8080/feiras' \
 ```
 > > 201 - Created
 >
+> > 400 - Bad Request
+>
 > > 500 - Internal Server Error
 
 - Atualiza uma Feira
@@ -142,7 +162,11 @@ curl --location --request PUT 'http://localhost:8080/feiras/1' \
     "referencia": "TV RUA PRETORIA - 3"
 }'
 ```
+> > 200 - Ok
+>
 > > 204 - No Content
+>
+> > 400 - Bad Request
 >
 > > 500 - Internal Server Error
 

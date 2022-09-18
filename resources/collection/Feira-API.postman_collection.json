@@ -6,6 +6,25 @@
 	},
 	"item": [
 		{
+			"name": "[Local] Verifica Sistema em Execução",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/ping",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "[Local] Busca Feira por ID",
 			"request": {
 				"method": "GET",

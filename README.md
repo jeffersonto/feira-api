@@ -80,6 +80,13 @@ go tool cover -html cover.out -o cover.html
 3. Abrir o `cover.html` no seu navegador de preferência.
 
 ### Principais End-Points e Retornos
+
+- Verifica se a aplicação está em execução (Ping)
+```
+curl --location --request GET 'http://localhost:8080/ping'
+```
+> > 200 - Ok: busca realizada com registros
+
 - Busca uma feira por ID
 ```
 curl --location --request GET 'http://localhost:8080/feiras/1'

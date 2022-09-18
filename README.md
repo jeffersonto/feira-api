@@ -89,7 +89,7 @@ curl --location --request GET 'http://localhost:8080/ping'
 
 - Busca uma feira por ID
 ```
-curl --location --request GET 'http://localhost:8080/feiras/1'
+curl --location --request GET 'http://localhost:8080/v1/feiras/1'
 ```
 > > 200 - Ok: busca realizada com registros
 >
@@ -99,7 +99,7 @@ curl --location --request GET 'http://localhost:8080/feiras/1'
 
 - Busca feiras Por Query Params
 ```
-curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
+curl --location --request GET 'http://localhost:8080/v1/feiras?bairro=VL FORMOSA'
 ```
 
 
@@ -118,7 +118,7 @@ bairro | string
 
 - Busca todas as feiras
 ```
-curl --location --request GET 'http://localhost:8080/feiras''
+curl --location --request GET 'http://localhost:8080/v1/feiras''
 ```
 > > 200 - Ok: busca realizada com registros
 >
@@ -128,7 +128,7 @@ curl --location --request GET 'http://localhost:8080/feiras''
 
 - Cria uma Nova Feira
 ```
-curl --location --request POST 'http://localhost:8080/feiras' \
+curl --location --request POST 'http://localhost:8080/v1/feiras' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "longitude": -46550164,
@@ -157,7 +157,7 @@ curl --location --request POST 'http://localhost:8080/feiras' \
 
 - Atualiza uma Feira
 ```
-curl --location --request PUT 'http://localhost:8080/feiras/1' \
+curl --location --request PUT 'http://localhost:8080/v1/feiras/1' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "longitude": -46550164,
@@ -188,7 +188,7 @@ curl --location --request PUT 'http://localhost:8080/feiras/1' \
 
 - Deleta uma Feira por ID
 ```
-curl --location --request DELETE 'http://localhost:8080/feiras/1'
+curl --location --request DELETE 'http://localhost:8080/v1/feiras/1'
 ```
 > > 204 - No Content: deleção executada corretamente ou não houve afetação por ausência do dado
 >

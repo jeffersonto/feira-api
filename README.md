@@ -59,6 +59,8 @@ go run github.com/jeffersonto/feira-api/cmd
 
 Ou abrir o projeto em sua IDE preferida e executá-lo através de atalhos disponíveis.
 
+O arquivo de feira será importado automaticamente a cada execução da aplicação, não sendo necessário quaisquer passos adicionais.
+
 ### Testes
 
 Para execução dos testes com cobertura, na pasta raiz do projeto, seguir os passos:
@@ -120,6 +122,8 @@ curl --location --request POST 'http://localhost:8080/feiras' \
 ```
 > > 201 - Created
 >
+> > 400 - Bad Request
+>
 > > 500 - Internal Server Error
 
 - Atualiza uma Feira
@@ -145,7 +149,11 @@ curl --location --request PUT 'http://localhost:8080/feiras/1' \
     "referencia": "TV RUA PRETORIA - 3"
 }'
 ```
+> > 200 - Ok
+>
 > > 204 - No Content
+>
+> > 400 - Bad Request
 >
 > > 500 - Internal Server Error
 

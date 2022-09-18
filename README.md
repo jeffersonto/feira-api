@@ -72,7 +72,7 @@ go tool cover -html cover.out -o cover.html
 3. Abrir o `cover.html` no seu navegador de preferência.
 
 ### Principais End-Points e Retornos
-- Busca um feira por ID
+- Busca uma feira por ID
 ```
 curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
@@ -82,7 +82,7 @@ curl --location --request GET 'http://localhost:8080/feiras/1'
 >
 > > 500 - Internal Server Error
 
-- Busca uma Feira Por Query Params
+- Busca feiras Por Query Params
 ```
 curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 ```

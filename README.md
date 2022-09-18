@@ -84,7 +84,7 @@ go tool cover -html cover.out -o cover.html
 ```
 curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
-> > 200 - Created
+> > 200 - Ok
 >
 > > 204 - No Content
 >
@@ -94,7 +94,7 @@ curl --location --request GET 'http://localhost:8080/feiras/1'
 ```
 curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 ```
-> > 200 - Created
+> > 200 - Ok
 >
 > > 204 - No Content
 >
@@ -104,7 +104,7 @@ curl --location --request GET 'http://localhost:8080/feiras?bairro=VL FORMOSA'
 ```
 curl --location --request GET 'http://localhost:8080/feiras''
 ```
-> > 200 - Created
+> > 200 - Ok
 >
 > > 204 - No Content
 >

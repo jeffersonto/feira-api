@@ -36,6 +36,7 @@ func NewUpdateHandler(handler v1.Handler) {
 // @Param        id   path      int  true  "Feira ID"
 // @Param        feira     body     dto.Fair  true  "Nova Feira"
 // @Success      200
+// @Success      204
 // @Failure      400
 // @Failure      500
 // @Router       /feiras/{id} [put].

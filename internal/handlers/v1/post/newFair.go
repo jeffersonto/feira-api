@@ -48,12 +48,13 @@ func (handler *newFairHandler) NewFair(c *gin.Context) {
 		return
 	}
 
-	err = handler.Service.SaveFair(newFair)
+	locationURL, err := handler.Service.SaveFair(newFair)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
+	c.Writer.Header().Set("Location", locationURL)
 	logrus.Tracef("Post NewFair Finished")
 	c.Status(http.StatusCreated)
 }

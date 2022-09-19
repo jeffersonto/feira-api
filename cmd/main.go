@@ -7,17 +7,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// @title           Feira API
-// @version         1.0
-// @description     Gerenciamento de feiras livres de São Paulo
-// @termsOfService  http://swagger.io/terms/
-
 // @contact.name   Jefferson de Almeida Costa
 // @contact.url    https://www.linkedin.com/in/jeffersonacosta/
 // @contact.email  jefferson.acosta@hotmail.com
 
 // @host      localhost:8080
-// @BasePath  /v1 .
+// @BasePath  /v1
+
+// @title           Feira API
+// @version         1.0
+// @description     Gerenciamento de feiras livres de São Paulo
+// @termsOfService  http://swagger.io/terms/
 func main() {
 	config.Start()
 	port := "8080"

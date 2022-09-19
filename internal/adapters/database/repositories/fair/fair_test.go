@@ -292,7 +292,7 @@ func TestSave(t *testing.T) {
 		name     string
 		input    entity.Fair
 		warmUP   func(fair entity.Fair)
-		expected func(err error)
+		expected func(result int64, err error)
 	}{
 		{
 			name:  "Should return a generic error when trying to insert",
@@ -305,7 +305,7 @@ func TestSave(t *testing.T) {
 						fair.Numero, fair.Bairro, fair.Referencia).
 					WillReturnError(errors.New("error saving rows"))
 			},
-			expected: func(err error) {
+			expected: func(result int64, err error) {
 				assert.NotNil(t, err)
 				assert.Error(t, err)
 				assert.Equal(t, "error saving rows", err.Error())
@@ -322,7 +322,7 @@ func TestSave(t *testing.T) {
 						fair.Numero, fair.Bairro, fair.Referencia).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 			},
-			expected: func(err error) {
+			expected: func(result int64, err error) {
 				assert.Nil(t, err)
 			},
 		},
@@ -331,8 +331,8 @@ func TestSave(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.warmUP(tt.input)
-			err := sqlClient.Save(tt.input)
-			tt.expected(err)
+			results, err := sqlClient.Save(tt.input)
+			tt.expected(results, err)
 		})
 	}
 }

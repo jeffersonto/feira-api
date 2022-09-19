@@ -66,8 +66,6 @@ O arquivo de feira será importado automaticamente a cada execução da aplicaç
 
 ### Testes
 
-[**Clique aqui para verificar a cobertura de testes**](https://htmlpreview.github.io/?https://raw.githubusercontent.com/jeffersonto/feira-api/master/docs/coverage/cover.html?token=GHSAT0AAAAAABYO6OZ5FBGS7O3DXEHSEIU2YZHYLOA)
-
 Para execução dos testes com cobertura, na pasta raiz do projeto, seguir os passos:
 
 1. Executar o go test
@@ -83,6 +81,8 @@ go tool cover -html cover.out -o cover.html
 
 ### Principais End-Points e Retornos
 
+>[**Swagger** - http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+
 - Verifica se a aplicação está em execução (Ping)
 ```
 curl --location --request GET 'http://localhost:8080/ping'
@@ -96,6 +96,8 @@ curl --location --request GET 'http://localhost:8080/v1/feiras/1'
 > > 200 - Ok: busca realizada com registros
 >
 > > 204 - No Content: busca realizada sem registros
+>
+> > 400 - Bad Request: path parameter inválido
 >
 > > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
@@ -115,6 +117,8 @@ curl --location --request GET 'http://localhost:8080/v1/feiras?bairro=VL FORMOSA
 > > 200 - Ok: busca realizada com registros
 >
 > > 204 - No Content: busca realizada sem registros
+>
+> > 400 - Bad Request: query parameter inválido
 >
 > > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
@@ -193,6 +197,8 @@ curl --location --request PUT 'http://localhost:8080/v1/feiras/1' \
 curl --location --request DELETE 'http://localhost:8080/v1/feiras/1'
 ```
 > > 204 - No Content: deleção executada corretamente ou não houve afetação por ausência do dado
+>
+> > 404 - Bad Request: path parameter inválido
 >
 > > 500 - Internal Server Error: erro desconhecido na busca dos dado
 

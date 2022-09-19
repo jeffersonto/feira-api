@@ -25,6 +25,16 @@ func NewFairHandler(handler v1.Handler) {
 	handle.RouterGroup.POST(urlNewFair, handle.NewFair)
 }
 
+// Feira godoc
+// @Summary      Cria uma Nova Feira
+// @Description  Cria uma Nova Feira
+// @Tags         Feira
+// @Accept       json
+// @Param        feira     body     dto.Fair  true  "Nova Feira"
+// @Success      201
+// @Failure      400
+// @Failure      500
+// @Router       /feiras [post].
 func (handler *newFairHandler) NewFair(c *gin.Context) {
 	var (
 		newFair dto.Fair

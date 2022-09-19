@@ -25,6 +25,16 @@ func NewFairByIDyHandler(handler v1.Handler) {
 	handle.RouterGroup.DELETE(urlByID, handle.FairByID)
 }
 
+// Feira godoc
+// @Summary      Deleta uma feira por ID
+// @Description  Deleta uma feira por ID
+// @Tags         Feira
+// @Accept       json
+// @Param        id   path      int  true  "Feira ID"
+// @Success      204
+// @Failure      400
+// @Failure      500
+// @Router       /feiras/{id} [delete].
 func (handler *fairByIDHandler) FairByID(c *gin.Context) {
 	logrus.Tracef("Delete FairByID Initializing")
 

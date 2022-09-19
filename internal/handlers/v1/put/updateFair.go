@@ -28,6 +28,17 @@ func NewUpdateHandler(handler v1.Handler) {
 	handle.RouterGroup.PUT(urlUpdateFair, handle.UpdateFair)
 }
 
+// Feira godoc
+// @Summary      Atualiza uma Feira por ID
+// @Description  Atualiza uma Feira por ID
+// @Tags         Feira
+// @Accept       json
+// @Param        id   path      int  true  "Feira ID"
+// @Param        feira     body     dto.Fair  true  "Nova Feira"
+// @Success      200
+// @Failure      400
+// @Failure      500
+// @Router       /feiras/{id} [put].
 func (handler *updateFairHandler) UpdateFair(c *gin.Context) {
 	var (
 		updateFair dto.Fair

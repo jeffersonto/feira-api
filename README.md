@@ -66,7 +66,7 @@ O arquivo de feira será importado automaticamente a cada execução da aplicaç
 
 ### Testes
 
-[**Clique aqui para verificar a cobertura de testes**](https://htmlpreview.github.io/?https://github.com/jeffersonto/feira-api/blob/master/docs/coverage/cover.html)
+[**Clique aqui para verificar a cobertura de testes**](https://htmlpreview.github.io/?https://raw.githubusercontent.com/jeffersonto/feira-api/master/docs/coverage/cover.html?token=DFSJKDFKLFJVJIOIOJSDKLF989JIOPJ8990#file0)
 
 Para execução dos testes com cobertura, na pasta raiz do projeto, seguir os passos:
 

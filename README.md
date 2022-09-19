@@ -16,7 +16,7 @@
   - [Testes](#testes)
   - [Principais End-Points e Retornos](#principais-end-points-e-retornos)
 - [Collection Postman](#collection-postman)
-- [Débitos Técnicos](#debitos-tecnicos)
+- [Débitos Técnicos](#débitos-técnicos)
 - [Licença](#licença)
 - [Autor](#autor)
 

@@ -154,7 +154,20 @@ curl --location --request POST 'http://localhost:8080/v1/feiras' \
     "bairro": "VL FORMOSA",
     "referencia": "TV RUA PRETORIA"
 }'
+
 ```
+
+> O novo recurso gerado será retornado no header **location**
+
+Exemplo:
+```
+content-length: 0
+content-type: application/json
+date: Mon,19 Sep 2022 13:22:26 GMT
+location: http://localhost:8080/v1/feiras/881
+```
+
+
 > > 201 - Created: novo registro criado com sucesso
 >
 > > 400 - Bad Request: body passado incorretamente

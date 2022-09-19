@@ -11,7 +11,7 @@ import (
 type FairRepository interface {
 	GetByID(fairID int64) (entity.Fair, error)
 	DeleteByID(fairID int64) error
-	Save(fair entity.Fair) error
+	Save(fair entity.Fair) (int64, error)
 	Update(id int64, fair entity.Fair) error
 	GetByQueryID(filters entity.Filter) ([]entity.Fair, error)
 	AlreadyAnID(userID int64) (bool, error)
@@ -115,8 +115,8 @@ func (repo *Repository) DeleteByID(fairID int64) error {
 	return nil
 }
 
-func (repo *Repository) Save(fair entity.Fair) error {
-	_, err := repo.DB.Exec(
+func (repo *Repository) Save(fair entity.Fair) (int64, error) {
+	result, err := repo.DB.Exec(
 		"INSERT INTO feiras_livres (longitude, latitude, setor_censitario, area_ponderacao,"+
 			" codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira,"+
 			"registro, logradouro, numero, bairro, referencia) "+
@@ -129,10 +129,12 @@ func (repo *Repository) Save(fair entity.Fair) error {
 		fair.Bairro, fair.Referencia)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	id, _ := result.LastInsertId()
+
+	return id, nil
 }
 
 func (repo *Repository) Update(id int64, fair entity.Fair) error {

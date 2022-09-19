@@ -48,7 +48,7 @@ func TestNewFair(t *testing.T) {
 				}`,
 			warmUP: func() {
 				service = new(serviceMock)
-				service.On("SaveFair", mock.Anything).Return(nil)
+				service.On("SaveFair", mock.Anything).Return("http://localhost:8080/v1/feiras", nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 201, result.Code)
@@ -76,7 +76,7 @@ func TestNewFair(t *testing.T) {
 				}`,
 			warmUP: func() {
 				service = new(serviceMock)
-				service.On("SaveFair", mock.Anything).Return(nil)
+				service.On("SaveFair", mock.Anything).Return("", nil)
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 400, result.Code)
@@ -105,7 +105,7 @@ func TestNewFair(t *testing.T) {
 				}`,
 			warmUP: func() {
 				service = new(serviceMock)
-				service.On("SaveFair", mock.Anything).Return(fmt.Errorf("internal_server_error"))
+				service.On("SaveFair", mock.Anything).Return("", fmt.Errorf("internal_server_error"))
 			},
 			expected: func(result *httptest.ResponseRecorder) {
 				assert.Equal(t, 500, result.Code)
@@ -134,7 +134,8 @@ type serviceMock struct {
 	service.FairService
 }
 
-func (sm *serviceMock) SaveFair(newFair dto.Fair) error {
+func (sm *serviceMock) SaveFair(newFair dto.Fair) (string, error) {
 	args := sm.Called(newFair)
-	return args.Error(0)
+	result, _ := args.Get(0).(string)
+	return result, args.Error(1)
 }

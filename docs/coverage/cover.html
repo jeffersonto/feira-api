@@ -96,7 +96,7 @@ import (
 type FairRepository interface {
         GetByID(fairID int64) (entity.Fair, error)
         DeleteByID(fairID int64) error
-        Save(fair entity.Fair) error
+        Save(fair entity.Fair) (int64, error)
         Update(id int64, fair entity.Fair) error
         GetByQueryID(filters entity.Filter) ([]entity.Fair, error)
         AlreadyAnID(userID int64) (bool, error)
@@ -200,8 +200,8 @@ func (repo *Repository) DeleteByID(fairID int64) error <span class="cov8" title=
         <span class="cov8" title="1">return nil</span>
 }
 
-func (repo *Repository) Save(fair entity.Fair) error <span class="cov8" title="1">{
-        _, err := repo.DB.Exec(
+func (repo *Repository) Save(fair entity.Fair) (int64, error) <span class="cov8" title="1">{
+        result, err := repo.DB.Exec(
                 "INSERT INTO feiras_livres (longitude, latitude, setor_censitario, area_ponderacao,"+
                         " codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira,"+
                         "registro, logradouro, numero, bairro, referencia) "+
@@ -214,10 +214,12 @@ func (repo *Repository) Save(fair entity.Fair) error <span class="cov8" title="1
                 fair.Bairro, fair.Referencia)
 
         if err != nil </span><span class="cov8" title="1">{
-                return err
+                return 0, err
         }</span>
 
-        <span class="cov8" title="1">return nil</span>
+        <span class="cov8" title="1">id, _ := result.LastInsertId()
+
+        return id, nil</span>
 }
 
 func (repo *Repository) Update(id int64, fair entity.Fair) error <span class="cov8" title="1">{
@@ -297,6 +299,16 @@ func NewFairByIDyHandler(handler v1.Handler) <span class="cov8" title="1">{
         handle.RouterGroup.DELETE(urlByID, handle.FairByID)
 }</span>
 
+// Feira godoc
+// @Summary      Deleta uma feira por ID
+// @Description  Deleta uma feira por ID
+// @Tags         Feira
+// @Accept       json
+// @Param        id   path      int  true  "Feira ID"
+// @Success      204
+// @Failure      400
+// @Failure      500
+// @Router       /feiras/{id} [delete].
 func (handler *fairByIDHandler) FairByID(c *gin.Context) <span class="cov8" title="1">{
         logrus.Tracef("Delete FairByID Initializing")
 
@@ -344,6 +356,17 @@ func NewFairByIDyHandler(handler v1.Handler) <span class="cov8" title="1">{
         handle.RouterGroup.GET(urlByID, handle.FairByID)
 }</span>
 
+// Feira godoc
+// @Summary      Busca uma feira por ID
+// @Description  Busca uma feira por ID
+// @Tags         Feira
+// @Accept       json
+// @Param        id   path      int  true  "Feira ID"
+// @Success      200   {object}   entity.Fair
+// @Success      204
+// @Failure      400
+// @Failure      500
+// @Router       /feiras/{id} [get].
 func (handler *fairByIDHandler) FairByID(c *gin.Context) <span class="cov8" title="1">{
         logrus.Tracef("Get FairByID Initializing")
 
@@ -390,6 +413,20 @@ func NewFairByQueryHandler(handler v1.Handler) <span class="cov8" title="1">{
         handle.RouterGroup.GET(URLByQuery, handle.FairByQuery)
 }</span>
 
+// Feira godoc
+// @Summary      Busca feiras Por Query Params
+// @Description  Busca feiras Por Query Params
+// @Tags         Feira
+// @Accept       json
+// @Param        distrito    query     string  false  "busca feira por distrito"
+// @Param        regiao5     query     string  false  "busca feira por regiao5"
+// @Param        nomeFeira   query     string  false  "busca feira por nome da feira"
+// @Param        bairro     query     string  false  "busca feira por bairro"
+// @Success      200   {object}   []entity.Fair
+// @Success      204
+// @Failure      400
+// @Failure      500
+// @Router       /feiras [get].
 func (handler *fairByQueryHandler) FairByQuery(c *gin.Context) <span class="cov8" title="1">{
         var (
                 queryParameters dto.QueryParameters
@@ -441,6 +478,16 @@ func NewFairHandler(handler v1.Handler) <span class="cov8" title="1">{
         handle.RouterGroup.POST(urlNewFair, handle.NewFair)
 }</span>
 
+// Feira godoc
+// @Summary      Cria uma Nova Feira
+// @Description  Cria uma Nova Feira
+// @Tags         Feira
+// @Accept       json
+// @Param        feira     body     dto.Fair  true  "Nova Feira"
+// @Success      201
+// @Failure      400
+// @Failure      500
+// @Router       /feiras [post].
 func (handler *newFairHandler) NewFair(c *gin.Context) <span class="cov8" title="1">{
         var (
                 newFair dto.Fair
@@ -454,13 +501,14 @@ func (handler *newFairHandler) NewFair(c *gin.Context) <span class="cov8" title=
                 return
         }</span>
 
-        <span class="cov8" title="1">err = handler.Service.SaveFair(newFair)
+        <span class="cov8" title="1">locationURL, err := handler.Service.SaveFair(newFair)
         if err != nil </span><span class="cov8" title="1">{
                 _ = c.Error(err)
                 return
         }</span>
 
-        <span class="cov8" title="1">logrus.Tracef("Post NewFair Finished")
+        <span class="cov8" title="1">c.Writer.Header().Set("Location", locationURL)
+        logrus.Tracef("Post NewFair Finished")
         c.Status(http.StatusCreated)</span>
 }
 </pre>
@@ -495,6 +543,17 @@ func NewUpdateHandler(handler v1.Handler) <span class="cov8" title="1">{
         handle.RouterGroup.PUT(urlUpdateFair, handle.UpdateFair)
 }</span>
 
+// Feira godoc
+// @Summary      Atualiza uma Feira por ID
+// @Description  Atualiza uma Feira por ID
+// @Tags         Feira
+// @Accept       json
+// @Param        id   path      int  true  "Feira ID"
+// @Param        feira     body     dto.Fair  true  "Nova Feira"
+// @Success      200
+// @Failure      400
+// @Failure      500
+// @Router       /feiras/{id} [put].
 func (handler *updateFairHandler) UpdateFair(c *gin.Context) <span class="cov8" title="1">{
         var (
                 updateFair dto.Fair
@@ -528,6 +587,8 @@ func (handler *updateFairHandler) UpdateFair(c *gin.Context) <span class="cov8" 
 
 import (
         "database/sql"
+        "fmt"
+        "net/url"
 
         "github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair"
         "github.com/jeffersonto/feira-api/internal/dto"
@@ -535,10 +596,16 @@ import (
         "github.com/jeffersonto/feira-api/internal/entity/exceptions"
 )
 
+const (
+        scheme = "http"
+        host   = "localhost:8080"
+        path   = "v1/feiras/%v"
+)
+
 type FairService interface {
         FindFairByID(id int64) (entity.Fair, error)
         DeleteFairByID(id int64) error
-        SaveFair(newFair dto.Fair) error
+        SaveFair(newFair dto.Fair) (string, error)
         UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error
         FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error)
 }
@@ -582,9 +649,14 @@ func (service *Fair) DeleteFairByID(id int64) error <span class="cov8" title="1"
         return service.repository.DeleteByID(id)
 }</span>
 
-func (service *Fair) SaveFair(newFair dto.Fair) error <span class="cov8" title="1">{
-        return service.repository.Save(newFair.ToEntity())
-}</span>
+func (service *Fair) SaveFair(newFair dto.Fair) (string, error) <span class="cov8" title="1">{
+        newID, err := service.repository.Save(newFair.ToEntity())
+        if err != nil </span><span class="cov8" title="1">{
+                return "", err
+        }</span>
+
+        <span class="cov8" title="1">return service.buildURL(newID), nil</span>
+}
 
 func (service *Fair) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error <span class="cov8" title="1">{
         alreadyAnID, err := service.repository.AlreadyAnID(fairID)
@@ -598,6 +670,15 @@ func (service *Fair) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) erro
 
         <span class="cov8" title="1">return service.repository.Update(fairID, fairToBeUpdated.ToEntity())</span>
 }
+
+func (service *Fair) buildURL(newID int64) string <span class="cov8" title="1">{
+        url := url.URL{
+                Scheme: scheme,
+                Host:   host,
+                Path:   fmt.Sprintf(path, newID),
+        }
+        return url.String()
+}</span>
 </pre>
 		
 		<pre class="file" id="file7" style="display: none">package commons

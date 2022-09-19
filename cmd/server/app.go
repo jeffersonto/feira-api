@@ -16,6 +16,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type HealthChecker struct{}
@@ -53,6 +56,8 @@ func Run(port string) error {
 	delete.NewFairByIDyHandler(handler)
 	post.NewFairHandler(handler)
 	put.NewUpdateHandler(handler)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router.Run(":" + port)
 }

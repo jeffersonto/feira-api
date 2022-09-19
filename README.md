@@ -97,6 +97,8 @@ curl --location --request GET 'http://localhost:8080/v1/feiras/1'
 >
 > > 204 - No Content: busca realizada sem registros
 >
+> > 400 - Bad Request: path parameter inválido
+>
 > > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
 - Busca feiras Por Query Params
@@ -115,6 +117,8 @@ curl --location --request GET 'http://localhost:8080/v1/feiras?bairro=VL FORMOSA
 > > 200 - Ok: busca realizada com registros
 >
 > > 204 - No Content: busca realizada sem registros
+>
+> > 400 - Bad Request: query parameter inválido
 >
 > > 500 - Internal Server Error: erro desconhecido na busca dos dados
 
@@ -193,6 +197,8 @@ curl --location --request PUT 'http://localhost:8080/v1/feiras/1' \
 curl --location --request DELETE 'http://localhost:8080/v1/feiras/1'
 ```
 > > 204 - No Content: deleção executada corretamente ou não houve afetação por ausência do dado
+>
+> > 404 - Bad Request: path parameter inválido
 >
 > > 500 - Internal Server Error: erro desconhecido na busca dos dado
 

@@ -66,8 +66,6 @@ O arquivo de feira será importado automaticamente a cada execução da aplicaç
 
 ### Testes
 
-[**Clique aqui para verificar a cobertura de testes**](https://htmlpreview.github.io/?https://raw.githubusercontent.com/jeffersonto/feira-api/master/docs/coverage/cover.html?token=GHSAT0AAAAAABYO6OZ5FBGS7O3DXEHSEIU2YZHYLOA)
-
 Para execução dos testes com cobertura, na pasta raiz do projeto, seguir os passos:
 
 1. Executar o go test
@@ -82,6 +80,8 @@ go tool cover -html cover.out -o cover.html
 3. Abrir o `cover.html` no seu navegador de preferência.
 
 ### Principais End-Points e Retornos
+
+>[**Swagger** - http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 
 - Verifica se a aplicação está em execução (Ping)
 ```

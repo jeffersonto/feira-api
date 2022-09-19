@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>fair: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair/fair.go (100.0%)</option>
+				
+				<option value="file1">github.com/jeffersonto/feira-api/internal/handlers/v1/delete/fairByID.go (100.0%)</option>
+				
+				<option value="file2">github.com/jeffersonto/feira-api/internal/handlers/v1/get/fairByID.go (100.0%)</option>
+				
+				<option value="file3">github.com/jeffersonto/feira-api/internal/handlers/v1/get/fairByQuery.go (80.0%)</option>
+				
+				<option value="file4">github.com/jeffersonto/feira-api/internal/handlers/v1/post/newFair.go (100.0%)</option>
+				
+				<option value="file5">github.com/jeffersonto/feira-api/internal/handlers/v1/put/updateFair.go (100.0%)</option>
+				
+				<option value="file6">github.com/jeffersonto/feira-api/internal/service/fair.go (100.0%)</option>
+				
+				<option value="file7">github.com/jeffersonto/feira-api/pkg/commons/commons.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package fair
+
+import (
+        "database/sql"
+
+        "github.com/jeffersonto/feira-api/internal/entity"
+        "github.com/jmoiron/sqlx"
+        _ "github.com/mattn/go-sqlite3" // import driver for sqlite connection
+)
+
+type FairRepository interface {
+        GetByID(fairID int64) (entity.Fair, error)
+        DeleteByID(fairID int64) error
+        Save(fair entity.Fair) error
+        Update(id int64, fair entity.Fair) error
+        GetByQueryID(filters entity.Filter) ([]entity.Fair, error)
+        AlreadyAnID(userID int64) (bool, error)
+}
+
+type Repository struct {
+        DB *sqlx.DB
+}
+
+func NewRepository(db *sqlx.DB) (*Repository, error) <span class="cov8" title="1">{
+        return &amp;Repository{
+                DB: db,
+        }, nil
+}</span>
+
+func (repo *Repository) GetByID(fairID int64) (entity.Fair, error) <span class="cov8" title="1">{
+        var (
+                fair = entity.Fair{}
+        )
+        err := repo.DB.Get(&amp;fair, "SELECT id, longitude, latitude, setor_censitario, area_ponderacao,"+
+                " codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira,"+
+                " registro, logradouro, numero, bairro, referencia "+
+                " FROM feiras_livres "+
+                " WHERE id = ? ", fairID)
+
+        if err != nil </span><span class="cov8" title="1">{
+                return fair, err
+        }</span>
+
+        <span class="cov8" title="1">return fair, nil</span>
+}
+
+func (repo *Repository) GetByQueryID(filters entity.Filter) ([]entity.Fair, error) <span class="cov8" title="1">{
+        parametersForQuery := make([]interface{}, 0)
+
+        query := "SELECT id, longitude, latitude, setor_censitario, area_ponderacao," +
+                " codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5," +
+                " regiao8, nome_feira, registro, logradouro, numero, bairro, referencia " +
+                " FROM feiras_livres " +
+                " WHERE 1=1 "
+
+        if filters.Distrito != "" </span><span class="cov8" title="1">{
+                query += " AND UPPER(TRIM(distrito)) = UPPER(TRIM(?))"
+                parametersForQuery = append(parametersForQuery, filters.Distrito)
+        }</span>
+
+        <span class="cov8" title="1">if filters.Regiao5 != "" </span><span class="cov8" title="1">{
+                query += " AND UPPER(TRIM(regiao5)) = UPPER(TRIM(?))"
+                parametersForQuery = append(parametersForQuery, filters.Regiao5)
+        }</span>
+
+        <span class="cov8" title="1">if filters.NomeFeira != "" </span><span class="cov8" title="1">{
+                query += " AND UPPER(TRIM(nome_feira)) = UPPER(TRIM(?))"
+                parametersForQuery = append(parametersForQuery, filters.NomeFeira)
+        }</span>
+
+        <span class="cov8" title="1">if filters.Bairro != "" </span><span class="cov8" title="1">{
+                query += " AND UPPER(TRIM(bairro)) = UPPER(TRIM(?))"
+                parametersForQuery = append(parametersForQuery, filters.Bairro)
+        }</span>
+
+        <span class="cov8" title="1">fairs := make([]entity.Fair, 0)
+
+        var rows *sql.Rows
+
+        rows, err := repo.DB.Query(query, parametersForQuery...)
+
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">defer rows.Close()
+
+        for rows.Next() </span><span class="cov8" title="1">{
+                var data entity.Fair
+                err = rows.Scan(&amp;data.ID, &amp;data.Longitude, &amp;data.Latitude, &amp;data.SetorCensitario, &amp;data.AreaPonderacao,
+                        &amp;data.CodigoIBGE, &amp;data.Distrito, &amp;data.CodigoSubPrefeitura, &amp;data.SubPrefeitura, &amp;data.Regiao5,
+                        &amp;data.Regiao8, &amp;data.NomeFeira, &amp;data.Registro, &amp;data.Logradouro, &amp;data.Numero, &amp;data.Bairro, &amp;data.Referencia)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+                <span class="cov8" title="1">fairs = append(fairs, data)</span>
+        }
+
+        <span class="cov8" title="1">if rows.Err() != nil </span><span class="cov8" title="1">{
+                return nil, rows.Err()
+        }</span>
+
+        <span class="cov8" title="1">return fairs, nil</span>
+}
+
+func (repo *Repository) DeleteByID(fairID int64) error <span class="cov8" title="1">{
+        _, err := repo.DB.Exec(
+                "DELETE FROM feiras_livres"+
+                        " WHERE id = ? ", fairID)
+
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (repo *Repository) Save(fair entity.Fair) error <span class="cov8" title="1">{
+        _, err := repo.DB.Exec(
+                "INSERT INTO feiras_livres (longitude, latitude, setor_censitario, area_ponderacao,"+
+                        " codigo_ibge, distrito, codigo_subprefeitura, subprefeitura, regiao5, regiao8, nome_feira,"+
+                        "registro, logradouro, numero, bairro, referencia) "+
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                fair.Longitude, fair.Latitude, fair.SetorCensitario,
+                fair.AreaPonderacao, fair.CodigoIBGE, fair.Distrito,
+                fair.CodigoSubPrefeitura, fair.SubPrefeitura,
+                fair.Regiao5, fair.Regiao8, fair.NomeFeira,
+                fair.Registro, fair.Logradouro, fair.Numero,
+                fair.Bairro, fair.Referencia)
+
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (repo *Repository) Update(id int64, fair entity.Fair) error <span class="cov8" title="1">{
+        _, err := repo.DB.Exec(
+                "UPDATE feiras_livres SET"+
+                        " longitude = ?,"+
+                        " latitude = ?,"+
+                        " setor_censitario = ?,"+
+                        " area_ponderacao = ?,"+
+                        " codigo_ibge = ?, "+
+                        " distrito = ?,"+
+                        " codigo_subprefeitura = ?, "+
+                        " subprefeitura = ?,"+
+                        " regiao5 = ?,"+
+                        " regiao8 = ?,"+
+                        " nome_feira = ?,"+
+                        " registro = ?,"+
+                        " logradouro = ?,"+
+                        " numero = ?,"+
+                        " bairro = ?,"+
+                        " referencia = ?"+
+                        " WHERE id = ? ",
+                fair.Longitude, fair.Latitude, fair.SetorCensitario,
+                fair.AreaPonderacao, fair.CodigoIBGE, fair.Distrito,
+                fair.CodigoSubPrefeitura, fair.SubPrefeitura,
+                fair.Regiao5, fair.Regiao8, fair.NomeFeira,
+                fair.Registro, fair.Logradouro, fair.Numero,
+                fair.Bairro, fair.Referencia, id)
+
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (repo *Repository) AlreadyAnID(userID int64) (bool, error) <span class="cov8" title="1">{
+        var idFetched int64
+        err := repo.DB.QueryRow("SELECT id "+
+                " FROM feiras_livres "+
+                " WHERE id = ?", userID).Scan(&amp;idFetched)
+        switch </span>{
+        case err == sql.ErrNoRows:<span class="cov8" title="1">
+                return false, nil</span>
+        case err != nil:<span class="cov8" title="1">
+                return false, err</span>
+        default:<span class="cov8" title="1">
+                return true, nil</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package delete
+
+import (
+        "net/http"
+        "strings"
+
+        v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
+        "github.com/jeffersonto/feira-api/pkg/commons"
+
+        "github.com/gin-gonic/gin"
+        "github.com/sirupsen/logrus"
+)
+
+const (
+        urlByID = "/feiras/:fairId"
+)
+
+type fairByIDHandler struct {
+        v1.Handler
+}
+
+func NewFairByIDyHandler(handler v1.Handler) <span class="cov8" title="1">{
+        handle := fairByIDHandler{Handler: handler}
+        handle.RouterGroup.DELETE(urlByID, handle.FairByID)
+}</span>
+
+func (handler *fairByIDHandler) FairByID(c *gin.Context) <span class="cov8" title="1">{
+        logrus.Tracef("Delete FairByID Initializing")
+
+        fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">err = handler.Service.DeleteFairByID(fairID)
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">logrus.Tracef("Delete FairByID Finished")
+        c.Status(http.StatusNoContent)</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package get
+
+import (
+        "net/http"
+        "strings"
+
+        v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
+        "github.com/jeffersonto/feira-api/pkg/commons"
+
+        "github.com/gin-gonic/gin"
+        "github.com/sirupsen/logrus"
+)
+
+const (
+        urlByID = "/feiras/:fairId"
+)
+
+type fairByIDHandler struct {
+        v1.Handler
+}
+
+func NewFairByIDyHandler(handler v1.Handler) <span class="cov8" title="1">{
+        handle := fairByIDHandler{Handler: handler}
+        handle.RouterGroup.GET(urlByID, handle.FairByID)
+}</span>
+
+func (handler *fairByIDHandler) FairByID(c *gin.Context) <span class="cov8" title="1">{
+        logrus.Tracef("Get FairByID Initializing")
+
+        fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">feira, err := handler.Service.FindFairByID(fairID)
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">logrus.Tracef("Get FairByID Finished")
+        c.JSON(http.StatusOK, feira)</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package get
+
+import (
+        "net/http"
+
+        v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
+        "github.com/gin-gonic/gin"
+        "github.com/jeffersonto/feira-api/internal/dto"
+        "github.com/jeffersonto/feira-api/internal/entity/exceptions"
+        "github.com/sirupsen/logrus"
+)
+
+const (
+        URLByQuery = "/feiras"
+)
+
+type fairByQueryHandler struct {
+        v1.Handler
+}
+
+func NewFairByQueryHandler(handler v1.Handler) <span class="cov8" title="1">{
+        handle := fairByQueryHandler{Handler: handler}
+        handle.RouterGroup.GET(URLByQuery, handle.FairByQuery)
+}</span>
+
+func (handler *fairByQueryHandler) FairByQuery(c *gin.Context) <span class="cov8" title="1">{
+        var (
+                queryParameters dto.QueryParameters
+        )
+        logrus.Tracef("Get FairByQuery Initializing")
+
+        logrus.Infof("query=%+v", c.Request.URL.Query())
+        if err := c.ShouldBindQuery(&amp;queryParameters); err != nil </span><span class="cov0" title="0">{
+                err = exceptions.NewBadRequest(err)
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">feira, err := handler.Service.FindFairByQuery(queryParameters)
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">logrus.Tracef("Get FairByQuery Finished")
+        c.JSON(http.StatusOK, feira)</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package post
+
+import (
+        "net/http"
+
+        v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
+        "github.com/gin-gonic/gin"
+        "github.com/gin-gonic/gin/binding"
+        "github.com/jeffersonto/feira-api/internal/dto"
+        "github.com/jeffersonto/feira-api/internal/entity/exceptions"
+        "github.com/sirupsen/logrus"
+)
+
+const (
+        urlNewFair = "/feiras"
+)
+
+type newFairHandler struct {
+        v1.Handler
+}
+
+func NewFairHandler(handler v1.Handler) <span class="cov8" title="1">{
+        handle := newFairHandler{Handler: handler}
+        handle.RouterGroup.POST(urlNewFair, handle.NewFair)
+}</span>
+
+func (handler *newFairHandler) NewFair(c *gin.Context) <span class="cov8" title="1">{
+        var (
+                newFair dto.Fair
+        )
+        logrus.Tracef("Post NewFair Initializing")
+
+        err := c.ShouldBindBodyWith(&amp;newFair, binding.JSON)
+
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(exceptions.NewBadRequest(err))
+                return
+        }</span>
+
+        <span class="cov8" title="1">err = handler.Service.SaveFair(newFair)
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">logrus.Tracef("Post NewFair Finished")
+        c.Status(http.StatusCreated)</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package put
+
+import (
+        "net/http"
+        "strings"
+
+        v1 "github.com/jeffersonto/feira-api/internal/handlers/v1"
+
+        "github.com/jeffersonto/feira-api/internal/dto"
+        "github.com/jeffersonto/feira-api/internal/entity/exceptions"
+        "github.com/jeffersonto/feira-api/pkg/commons"
+
+        "github.com/gin-gonic/gin"
+        "github.com/gin-gonic/gin/binding"
+        "github.com/sirupsen/logrus"
+)
+
+const (
+        urlUpdateFair = "/feiras/:fairId"
+)
+
+type updateFairHandler struct {
+        v1.Handler
+}
+
+func NewUpdateHandler(handler v1.Handler) <span class="cov8" title="1">{
+        handle := updateFairHandler{Handler: handler}
+        handle.RouterGroup.PUT(urlUpdateFair, handle.UpdateFair)
+}</span>
+
+func (handler *updateFairHandler) UpdateFair(c *gin.Context) <span class="cov8" title="1">{
+        var (
+                updateFair dto.Fair
+        )
+        logrus.Tracef("Put UpdateFair Initializing")
+
+        fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">err = c.ShouldBindBodyWith(&amp;updateFair, binding.JSON)
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(exceptions.NewBadRequest(err))
+                return
+        }</span>
+
+        <span class="cov8" title="1">err = handler.Service.UpdateFairByID(fairID, updateFair)
+        if err != nil </span><span class="cov8" title="1">{
+                _ = c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="1">logrus.Tracef("Put UpdateFair Finished")
+        c.Status(http.StatusOK)</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package service
+
+import (
+        "database/sql"
+
+        "github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair"
+        "github.com/jeffersonto/feira-api/internal/dto"
+        "github.com/jeffersonto/feira-api/internal/entity"
+        "github.com/jeffersonto/feira-api/internal/entity/exceptions"
+)
+
+type FairService interface {
+        FindFairByID(id int64) (entity.Fair, error)
+        DeleteFairByID(id int64) error
+        SaveFair(newFair dto.Fair) error
+        UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error
+        FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error)
+}
+
+type Fair struct {
+        repository fair.FairRepository
+}
+
+func NewFairService(repository fair.FairRepository) *Fair <span class="cov8" title="1">{
+        return &amp;Fair{repository: repository}
+}</span>
+
+func (service *Fair) FindFairByID(id int64) (entity.Fair, error) <span class="cov8" title="1">{
+        fair, err := service.repository.GetByID(id)
+
+        if err == sql.ErrNoRows </span><span class="cov8" title="1">{
+                return fair, exceptions.NewNoContent()
+        }</span>
+
+        <span class="cov8" title="1">if err != nil </span><span class="cov8" title="1">{
+                return fair, err
+        }</span>
+
+        <span class="cov8" title="1">return fair, nil</span>
+}
+
+func (service *Fair) FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error) <span class="cov8" title="1">{
+        fairs, err := service.repository.GetByQueryID(filters.ToEntity())
+        if err != nil </span><span class="cov8" title="1">{
+                return fairs, err
+        }</span>
+
+        <span class="cov8" title="1">if len(fairs) == 0 </span><span class="cov8" title="1">{
+                return fairs, exceptions.NewNoContent()
+        }</span>
+
+        <span class="cov8" title="1">return fairs, nil</span>
+}
+
+func (service *Fair) DeleteFairByID(id int64) error <span class="cov8" title="1">{
+        return service.repository.DeleteByID(id)
+}</span>
+
+func (service *Fair) SaveFair(newFair dto.Fair) error <span class="cov8" title="1">{
+        return service.repository.Save(newFair.ToEntity())
+}</span>
+
+func (service *Fair) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error <span class="cov8" title="1">{
+        alreadyAnID, err := service.repository.AlreadyAnID(fairID)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if !alreadyAnID </span><span class="cov8" title="1">{
+                return exceptions.NewNoContent()
+        }</span>
+
+        <span class="cov8" title="1">return service.repository.Update(fairID, fairToBeUpdated.ToEntity())</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package commons
+
+import (
+        "encoding/json"
+        "fmt"
+        "strconv"
+
+        "github.com/jeffersonto/feira-api/internal/entity/exceptions"
+)
+
+const (
+        ErrConversion = "could not convert value %v to integer"
+)
+
+func ConvertToInt(input interface{}) (int64, error) <span class="cov8" title="1">{
+        switch dataToConvert := input.(type) </span>{
+        case int:<span class="cov8" title="1">
+                return int64(dataToConvert), nil</span>
+        case float32:<span class="cov8" title="1">
+                return int64(dataToConvert), nil</span>
+        case float64:<span class="cov8" title="1">
+                return int64(dataToConvert), nil</span>
+        case string:<span class="cov8" title="1">
+                if dataToConvert == "" </span><span class="cov8" title="1">{
+                        dataToConvert = "0"
+                }</span>
+                <span class="cov8" title="1">result, err := strconv.ParseInt(dataToConvert, 10, 0)
+                if err != nil </span><span class="cov8" title="1">{
+                        return 0, exceptions.NewBadRequest(fmt.Errorf(ErrConversion, dataToConvert))
+                }</span>
+                <span class="cov8" title="1">return result, nil</span>
+        case json.Number:<span class="cov8" title="1">
+                floatResult, err := dataToConvert.Float64()
+                if err != nil </span><span class="cov8" title="1">{
+                        return 0, exceptions.NewBadRequest(fmt.Errorf(ErrConversion, dataToConvert))
+                }</span>
+                <span class="cov8" title="1">return int64(floatResult), nil</span>
+        default:<span class="cov8" title="1">
+                return 0, exceptions.NewBadRequest(fmt.Errorf(ErrConversion, dataToConvert))</span>
+        }
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

@@ -179,6 +179,9 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Bad Request"
                     },

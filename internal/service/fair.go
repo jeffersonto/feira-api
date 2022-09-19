@@ -1,6 +1,8 @@
 package service
 
 import (
+	"database/sql"
+
 	"github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair"
 	"github.com/jeffersonto/feira-api/internal/dto"
 	"github.com/jeffersonto/feira-api/internal/entity"
@@ -24,7 +26,17 @@ func NewFairService(repository fair.FairRepository) *Fair {
 }
 
 func (service *Fair) FindFairByID(id int64) (entity.Fair, error) {
-	return service.repository.GetByID(id)
+	fair, err := service.repository.GetByID(id)
+
+	if err == sql.ErrNoRows {
+		return fair, exceptions.NewNoContent()
+	}
+
+	if err != nil {
+		return fair, err
+	}
+
+	return fair, nil
 }
 
 func (service *Fair) FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error) {

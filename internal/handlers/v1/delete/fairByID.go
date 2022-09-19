@@ -22,26 +22,24 @@ type fairByIDHandler struct {
 
 func NewFairByIDyHandler(handler v1.Handler) {
 	handle := fairByIDHandler{Handler: handler}
-	handle.RouterGroup.DELETE(urlByID, handle.FairByID())
+	handle.RouterGroup.DELETE(urlByID, handle.FairByID)
 }
 
-func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		logrus.Tracef("Delete FairByID Initializing")
+func (handler *fairByIDHandler) FairByID(c *gin.Context) {
+	logrus.Tracef("Delete FairByID Initializing")
 
-		fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		err = handler.Service.DeleteFairByID(fairID)
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		logrus.Tracef("Delete FairByID Finished")
-		c.Status(http.StatusNoContent)
+	fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
+	if err != nil {
+		_ = c.Error(err)
+		return
 	}
+
+	err = handler.Service.DeleteFairByID(fairID)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	logrus.Tracef("Delete FairByID Finished")
+	c.Status(http.StatusNoContent)
 }

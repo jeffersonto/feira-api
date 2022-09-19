@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/jeffersonto/feira-api/internal/dto"
 	"github.com/jeffersonto/feira-api/internal/entity"
@@ -34,6 +35,19 @@ func TestFindFairByID(t *testing.T) {
 			expected: func(result entity.Fair, err error) {
 				assert.Nil(t, err)
 				assert.NotNil(t, result)
+				repository.AssertNumberOfCalls(t, "GetByID", 1)
+			},
+		},
+		{
+			name:  "Should successfully query the repository, however not find records",
+			input: 1,
+			warmUP: func(fairID int64) {
+				repository = new(repositoryMock)
+				repository.On("GetByID", fairID).Return(entity.Fair{}, sql.ErrNoRows)
+			},
+			expected: func(result entity.Fair, err error) {
+				assert.NotNil(t, err)
+				assert.Equal(t, entity.Fair{}, result)
 				repository.AssertNumberOfCalls(t, "GetByID", 1)
 			},
 		},

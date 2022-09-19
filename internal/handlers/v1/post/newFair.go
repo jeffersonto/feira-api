@@ -22,30 +22,28 @@ type newFairHandler struct {
 
 func NewFairHandler(handler v1.Handler) {
 	handle := newFairHandler{Handler: handler}
-	handle.RouterGroup.POST(urlNewFair, handle.NewFair())
+	handle.RouterGroup.POST(urlNewFair, handle.NewFair)
 }
 
-func (handler *newFairHandler) NewFair() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var (
-			newFair dto.Fair
-		)
-		logrus.Tracef("Post NewFair Initializing")
+func (handler *newFairHandler) NewFair(c *gin.Context) {
+	var (
+		newFair dto.Fair
+	)
+	logrus.Tracef("Post NewFair Initializing")
 
-		err := c.ShouldBindBodyWith(&newFair, binding.JSON)
+	err := c.ShouldBindBodyWith(&newFair, binding.JSON)
 
-		if err != nil {
-			_ = c.Error(exceptions.NewBadRequest(err))
-			return
-		}
-
-		err = handler.Service.SaveFair(newFair)
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		logrus.Tracef("Post NewFair Finished")
-		c.Status(http.StatusCreated)
+	if err != nil {
+		_ = c.Error(exceptions.NewBadRequest(err))
+		return
 	}
+
+	err = handler.Service.SaveFair(newFair)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	logrus.Tracef("Post NewFair Finished")
+	c.Status(http.StatusCreated)
 }

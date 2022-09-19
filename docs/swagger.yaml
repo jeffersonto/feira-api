@@ -1,0 +1,232 @@
+basePath: /v1
+definitions:
+  dto.Fair:
+    properties:
+      area_ponderacao:
+        type: integer
+      bairro:
+        type: string
+      codigo_ibge:
+        type: string
+      codigo_subprefeitura:
+        type: integer
+      distrito:
+        type: string
+      id:
+        type: integer
+      latitude:
+        type: integer
+      logradouro:
+        type: string
+      longitude:
+        type: integer
+      nome_feira:
+        type: string
+      numero:
+        type: string
+      referencia:
+        type: string
+      regiao5:
+        type: string
+      regiao8:
+        type: string
+      registro:
+        type: string
+      setor_censitario:
+        type: integer
+      subprefeitura:
+        type: string
+    required:
+    - area_ponderacao
+    - codigo_ibge
+    - codigo_subprefeitura
+    - distrito
+    - latitude
+    - logradouro
+    - longitude
+    - nome_feira
+    - regiao5
+    - regiao8
+    - registro
+    - setor_censitario
+    - subprefeitura
+    type: object
+  entity.Fair:
+    properties:
+      area_ponderacao:
+        type: integer
+      bairro:
+        type: string
+      codigo_ibge:
+        type: string
+      codigo_subprefeitura:
+        type: integer
+      distrito:
+        type: string
+      id:
+        type: integer
+      latitude:
+        type: integer
+      logradouro:
+        type: string
+      longitude:
+        type: integer
+      nome_feira:
+        type: string
+      numero:
+        type: string
+      referencia:
+        type: string
+      regiao5:
+        type: string
+      regiao8:
+        type: string
+      registro:
+        type: string
+      setor_censitario:
+        type: integer
+      subprefeitura:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: jefferson.acosta@hotmail.com
+    name: Jefferson de Almeida Costa
+    url: https://www.linkedin.com/in/jeffersonacosta/
+  description: Gerenciamento de feiras livres de São Paulo
+  termsOfService: http://swagger.io/terms/
+  title: Feira API
+  version: "1.0"
+paths:
+  /feiras:
+    get:
+      consumes:
+      - application/json
+      description: Busca feiras Por Query Params
+      parameters:
+      - description: busca feira por distrito
+        in: query
+        name: distrito
+        type: string
+      - description: busca feira por regiao5
+        in: query
+        name: regiao5
+        type: string
+      - description: busca feira por nome da feira
+        in: query
+        name: nomeFeira
+        type: string
+      - description: busca feira por bairro
+        in: query
+        name: bairro
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Fair'
+            type: array
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Busca feiras Por Query Params
+      tags:
+      - Feira
+    post:
+      consumes:
+      - application/json
+      description: Cria uma Nova Feira
+      parameters:
+      - description: Nova Feira
+        in: body
+        name: feira
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Fair'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Cria uma Nova Feira
+      tags:
+      - Feira
+  /feiras/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleta uma feira por ID
+      parameters:
+      - description: Feira ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Deleta uma feira por ID
+      tags:
+      - Feira
+    get:
+      consumes:
+      - application/json
+      description: Busca uma feira por ID
+      parameters:
+      - description: Feira ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Fair'
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Busca uma feira por ID
+      tags:
+      - Feira
+    put:
+      consumes:
+      - application/json
+      description: Atualiza uma Feira por ID
+      parameters:
+      - description: Feira ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nova Feira
+        in: body
+        name: feira
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Fair'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Atualiza uma Feira por ID
+      tags:
+      - Feira
+swagger: "2.0"

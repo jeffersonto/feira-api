@@ -24,6 +24,20 @@ func NewFairByQueryHandler(handler v1.Handler) {
 	handle.RouterGroup.GET(URLByQuery, handle.FairByQuery)
 }
 
+// Feira godoc
+// @Summary      Busca feiras Por Query Params
+// @Description  Busca feiras Por Query Params
+// @Tags         Feira
+// @Accept       json
+// @Param        distrito    query     string  false  "busca feira por distrito"
+// @Param        regiao5     query     string  false  "busca feira por regiao5"
+// @Param        nomeFeira   query     string  false  "busca feira por nome da feira"
+// @Param        bairro     query     string  false  "busca feira por bairro"
+// @Success      200   {object}   []entity.Fair
+// @Success      204
+// @Failure      400
+// @Failure      500
+// @Router       /feiras [get].
 func (handler *fairByQueryHandler) FairByQuery(c *gin.Context) {
 	var (
 		queryParameters dto.QueryParameters

@@ -1,0 +1,344 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Gerenciamento de feiras livres de São Paulo",
+        "title": "Feira API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Jefferson de Almeida Costa",
+            "url": "https://www.linkedin.com/in/jeffersonacosta/",
+            "email": "jefferson.acosta@hotmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/v1",
+    "paths": {
+        "/feiras": {
+            "get": {
+                "description": "Busca feiras Por Query Params",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feira"
+                ],
+                "summary": "Busca feiras Por Query Params",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "busca feira por distrito",
+                        "name": "distrito",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "busca feira por regiao5",
+                        "name": "regiao5",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "busca feira por nome da feira",
+                        "name": "nomeFeira",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "busca feira por bairro",
+                        "name": "bairro",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Fair"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "description": "Cria uma Nova Feira",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feira"
+                ],
+                "summary": "Cria uma Nova Feira",
+                "parameters": [
+                    {
+                        "description": "Nova Feira",
+                        "name": "feira",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.Fair"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/feiras/{id}": {
+            "get": {
+                "description": "Busca uma feira por ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feira"
+                ],
+                "summary": "Busca uma feira por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feira ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Fair"
+                        }
+                    },
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualiza uma Feira por ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feira"
+                ],
+                "summary": "Atualiza uma Feira por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feira ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nova Feira",
+                        "name": "feira",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.Fair"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deleta uma feira por ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feira"
+                ],
+                "summary": "Deleta uma feira por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feira ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.Fair": {
+            "type": "object",
+            "required": [
+                "area_ponderacao",
+                "codigo_ibge",
+                "codigo_subprefeitura",
+                "distrito",
+                "latitude",
+                "logradouro",
+                "longitude",
+                "nome_feira",
+                "regiao5",
+                "regiao8",
+                "registro",
+                "setor_censitario",
+                "subprefeitura"
+            ],
+            "properties": {
+                "area_ponderacao": {
+                    "type": "integer"
+                },
+                "bairro": {
+                    "type": "string"
+                },
+                "codigo_ibge": {
+                    "type": "string"
+                },
+                "codigo_subprefeitura": {
+                    "type": "integer"
+                },
+                "distrito": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "latitude": {
+                    "type": "integer"
+                },
+                "logradouro": {
+                    "type": "string"
+                },
+                "longitude": {
+                    "type": "integer"
+                },
+                "nome_feira": {
+                    "type": "string"
+                },
+                "numero": {
+                    "type": "string"
+                },
+                "referencia": {
+                    "type": "string"
+                },
+                "regiao5": {
+                    "type": "string"
+                },
+                "regiao8": {
+                    "type": "string"
+                },
+                "registro": {
+                    "type": "string"
+                },
+                "setor_censitario": {
+                    "type": "integer"
+                },
+                "subprefeitura": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Fair": {
+            "type": "object",
+            "properties": {
+                "area_ponderacao": {
+                    "type": "integer"
+                },
+                "bairro": {
+                    "type": "string"
+                },
+                "codigo_ibge": {
+                    "type": "string"
+                },
+                "codigo_subprefeitura": {
+                    "type": "integer"
+                },
+                "distrito": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "latitude": {
+                    "type": "integer"
+                },
+                "logradouro": {
+                    "type": "string"
+                },
+                "longitude": {
+                    "type": "integer"
+                },
+                "nome_feira": {
+                    "type": "string"
+                },
+                "numero": {
+                    "type": "string"
+                },
+                "referencia": {
+                    "type": "string"
+                },
+                "regiao5": {
+                    "type": "string"
+                },
+                "regiao8": {
+                    "type": "string"
+                },
+                "registro": {
+                    "type": "string"
+                },
+                "setor_censitario": {
+                    "type": "integer"
+                },
+                "subprefeitura": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

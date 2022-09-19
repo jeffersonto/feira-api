@@ -25,6 +25,17 @@ func NewFairByIDyHandler(handler v1.Handler) {
 	handle.RouterGroup.GET(urlByID, handle.FairByID)
 }
 
+// Feira godoc
+// @Summary      Busca uma feira por ID
+// @Description  Busca uma feira por ID
+// @Tags         Feira
+// @Accept       json
+// @Param        id   path      int  true  "Feira ID"
+// @Success      200   {object}   entity.Fair
+// @Success      204
+// @Failure      400
+// @Failure      500
+// @Router       /feiras/{id} [get].
 func (handler *fairByIDHandler) FairByID(c *gin.Context) {
 	logrus.Tracef("Get FairByID Initializing")
 

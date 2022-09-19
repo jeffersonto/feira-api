@@ -11,10 +11,6 @@ import (
 	"testing"
 )
 
-type repositoryMock struct {
-	mock.Mock
-}
-
 func TestFindFairByID(t *testing.T) {
 
 	var repository *repositoryMock
@@ -220,7 +216,7 @@ func TestSaveFair(t *testing.T) {
 		input      dto.Fair
 		fairEntity entity.Fair
 		warmUP     func(fairEntity entity.Fair)
-		expected   func(err error)
+		expected   func(result string, err error)
 	}{
 		{
 			name:       "Should successfully save the record",
@@ -228,10 +224,11 @@ func TestSaveFair(t *testing.T) {
 			fairEntity: fairEntity,
 			warmUP: func(fairEntity entity.Fair) {
 				repository = new(repositoryMock)
-				repository.On("Save", fairEntity).Return(nil)
+				repository.On("Save", fairEntity).Return(int64(881), nil)
 			},
-			expected: func(err error) {
+			expected: func(result string, err error) {
 				assert.Nil(t, err)
+				assert.Equal(t, "http://localhost:8080/v1/feiras/881", result)
 				repository.AssertNumberOfCalls(t, "Save", 1)
 			},
 		},
@@ -241,11 +238,12 @@ func TestSaveFair(t *testing.T) {
 			fairEntity: fairEntity,
 			warmUP: func(fairEntity entity.Fair) {
 				repository = new(repositoryMock)
-				repository.On("Save", fairEntity).Return(errors.New("internal_server_error"))
+				repository.On("Save", fairEntity).Return(int64(0), errors.New("internal_server_error"))
 			},
-			expected: func(err error) {
+			expected: func(result string, err error) {
 				assert.NotNil(t, err)
 				assert.Error(t, err)
+				assert.Equal(t, "", result)
 				repository.AssertNumberOfCalls(t, "Save", 1)
 			},
 		},
@@ -253,8 +251,8 @@ func TestSaveFair(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.warmUP(tt.fairEntity)
-			err := service.NewFairService(repository).SaveFair(tt.input)
-			tt.expected(err)
+			results, err := service.NewFairService(repository).SaveFair(tt.input)
+			tt.expected(results, err)
 		})
 	}
 }
@@ -369,6 +367,10 @@ func TestUpdateFairByID(t *testing.T) {
 	}
 }
 
+type repositoryMock struct {
+	mock.Mock
+}
+
 func (sm *repositoryMock) GetByID(fairID int64) (entity.Fair, error) {
 	args := sm.Called(fairID)
 	result, _ := args.Get(0).(entity.Fair)
@@ -386,9 +388,10 @@ func (sm *repositoryMock) DeleteByID(fairID int64) error {
 	return args.Error(0)
 }
 
-func (sm *repositoryMock) Save(fair entity.Fair) error {
+func (sm *repositoryMock) Save(fair entity.Fair) (int64, error) {
 	args := sm.Called(fair)
-	return args.Error(0)
+	result, _ := args.Get(0).(int64)
+	return result, args.Error(1)
 }
 
 func (sm *repositoryMock) Update(id int64, fair entity.Fair) error {

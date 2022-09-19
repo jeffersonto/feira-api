@@ -2,6 +2,8 @@ package service
 
 import (
 	"database/sql"
+	"fmt"
+	"net/url"
 
 	"github.com/jeffersonto/feira-api/internal/adapters/database/repositories/fair"
 	"github.com/jeffersonto/feira-api/internal/dto"
@@ -9,10 +11,16 @@ import (
 	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
 )
 
+const (
+	scheme = "http"
+	host   = "localhost:8080"
+	path   = "v1/feiras/%v"
+)
+
 type FairService interface {
 	FindFairByID(id int64) (entity.Fair, error)
 	DeleteFairByID(id int64) error
-	SaveFair(newFair dto.Fair) error
+	SaveFair(newFair dto.Fair) (string, error)
 	UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error
 	FindFairByQuery(filters dto.QueryParameters) ([]entity.Fair, error)
 }
@@ -56,8 +64,13 @@ func (service *Fair) DeleteFairByID(id int64) error {
 	return service.repository.DeleteByID(id)
 }
 
-func (service *Fair) SaveFair(newFair dto.Fair) error {
-	return service.repository.Save(newFair.ToEntity())
+func (service *Fair) SaveFair(newFair dto.Fair) (string, error) {
+	newID, err := service.repository.Save(newFair.ToEntity())
+	if err != nil {
+		return "", err
+	}
+
+	return service.buildURL(newID), nil
 }
 
 func (service *Fair) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) error {
@@ -71,4 +84,13 @@ func (service *Fair) UpdateFairByID(fairID int64, fairToBeUpdated dto.Fair) erro
 	}
 
 	return service.repository.Update(fairID, fairToBeUpdated.ToEntity())
+}
+
+func (service *Fair) buildURL(newID int64) string {
+	url := url.URL{
+		Scheme: scheme,
+		Host:   host,
+		Path:   fmt.Sprintf(path, newID),
+	}
+	return url.String()
 }

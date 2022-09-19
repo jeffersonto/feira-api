@@ -22,26 +22,24 @@ type fairByIDHandler struct {
 
 func NewFairByIDyHandler(handler v1.Handler) {
 	handle := fairByIDHandler{Handler: handler}
-	handle.RouterGroup.GET(urlByID, handle.FairByID())
+	handle.RouterGroup.GET(urlByID, handle.FairByID)
 }
 
-func (handler *fairByIDHandler) FairByID() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		logrus.Tracef("Get FairByID Initializing")
+func (handler *fairByIDHandler) FairByID(c *gin.Context) {
+	logrus.Tracef("Get FairByID Initializing")
 
-		fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		feira, err := handler.Service.FindFairByID(fairID)
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		logrus.Tracef("Get FairByID Finished")
-		c.JSON(http.StatusOK, feira)
+	fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
+	if err != nil {
+		_ = c.Error(err)
+		return
 	}
+
+	feira, err := handler.Service.FindFairByID(fairID)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	logrus.Tracef("Get FairByID Finished")
+	c.JSON(http.StatusOK, feira)
 }

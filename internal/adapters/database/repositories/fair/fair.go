@@ -4,8 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/jeffersonto/feira-api/internal/entity"
-	"github.com/jeffersonto/feira-api/internal/entity/exceptions"
-
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3" // import driver for sqlite connection
 )
@@ -38,14 +36,12 @@ func (repo *Repository) GetByID(fairID int64) (entity.Fair, error) {
 		" registro, logradouro, numero, bairro, referencia "+
 		" FROM feiras_livres "+
 		" WHERE id = ? ", fairID)
-	switch {
-	case err == sql.ErrNoRows:
-		return fair, exceptions.NewNoContent()
-	case err != nil:
+
+	if err != nil {
 		return fair, err
-	default:
-		return fair, nil
 	}
+
+	return fair, nil
 }
 
 func (repo *Repository) GetByQueryID(filters entity.Filter) ([]entity.Fair, error) {

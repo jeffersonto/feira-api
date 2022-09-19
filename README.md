@@ -16,7 +16,7 @@
   - [Testes](#testes)
   - [Principais End-Points e Retornos](#principais-end-points-e-retornos)
 - [Collection Postman](#collection-postman)
-- [Débitos Técnicos](#debitos-tecnicos)
+- [Débitos Técnicos](#débitos-técnicos)
 - [Licença](#licença)
 - [Autor](#autor)
 
@@ -103,12 +103,12 @@ curl --location --request GET 'http://localhost:8080/v1/feiras?bairro=VL FORMOSA
 ```
 
 
-Parameters | Type
-------------- | -------------
-distrito | string
-regiao5 | string
-nomeFeira | string
-bairro | string
+| Parameters | Type   |
+|------------|--------|
+| distrito   | string |
+| regiao5    | string |
+| nomeFeira  | string |
+| bairro     | string |
 
 > > 200 - Ok: busca realizada com registros
 >

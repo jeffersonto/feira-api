@@ -25,35 +25,33 @@ type updateFairHandler struct {
 
 func NewUpdateHandler(handler v1.Handler) {
 	handle := updateFairHandler{Handler: handler}
-	handle.RouterGroup.PUT(urlUpdateFair, handle.UpdateFair())
+	handle.RouterGroup.PUT(urlUpdateFair, handle.UpdateFair)
 }
 
-func (handler *updateFairHandler) UpdateFair() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var (
-			updateFair dto.Fair
-		)
-		logrus.Tracef("Put UpdateFair Initializing")
+func (handler *updateFairHandler) UpdateFair(c *gin.Context) {
+	var (
+		updateFair dto.Fair
+	)
+	logrus.Tracef("Put UpdateFair Initializing")
 
-		fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		err = c.ShouldBindBodyWith(&updateFair, binding.JSON)
-		if err != nil {
-			_ = c.Error(exceptions.NewBadRequest(err))
-			return
-		}
-
-		err = handler.Service.UpdateFairByID(fairID, updateFair)
-		if err != nil {
-			_ = c.Error(err)
-			return
-		}
-
-		logrus.Tracef("Put UpdateFair Finished")
-		c.Status(http.StatusOK)
+	fairID, err := commons.ConvertToInt(strings.TrimSpace(c.Param("fairId")))
+	if err != nil {
+		_ = c.Error(err)
+		return
 	}
+
+	err = c.ShouldBindBodyWith(&updateFair, binding.JSON)
+	if err != nil {
+		_ = c.Error(exceptions.NewBadRequest(err))
+		return
+	}
+
+	err = handler.Service.UpdateFairByID(fairID, updateFair)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	logrus.Tracef("Put UpdateFair Finished")
+	c.Status(http.StatusOK)
 }

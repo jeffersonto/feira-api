@@ -51,21 +51,6 @@ func TestGetByID(t *testing.T) {
 			},
 		},
 		{
-			name:  "Should return the error sql: no rows in result set",
-			input: 999,
-			warmUP: func(id int64) {
-				mock.ExpectQuery(regexp.QuoteMeta(query)).
-					WithArgs(id).
-					WillReturnError(sql.ErrNoRows)
-			},
-			expected: func(result entity.Fair, err error) {
-				assert.Equal(t, entity.Fair{}, result)
-				assert.NotNil(t, err)
-				assert.Error(t, err)
-				assert.Equal(t, "not found", err.Error())
-			},
-		},
-		{
 			name:  "Should return records correctly",
 			input: 10,
 			warmUP: func(id int64) {
